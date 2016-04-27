@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.Set;
 
@@ -21,6 +22,14 @@ public class MainActivity extends AppCompatActivity {
 
     public MainActivity(){
         btActions = new BTActions();
+    }
+
+    /**
+     * Method to display a message on the Toast widget
+     * @param message - The {@link String} message to display
+     */
+    public void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /**
