@@ -16,7 +16,7 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
     Context context;
 
     public CustomAdapter(Context context, RowItem[] resource) {
-        super(context, R.layout.rowWithCheckbox, resource);
+        super(context, R.layout.rowWithCB, resource);
         this.context = context;
         this.rowItems = resource;
     }
@@ -24,9 +24,9 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-        convertView = inflater.inflate(R.layout.rowWithCheckbox, parent, false);
-        TextView name = (TextView)convertView.findViewById(R.id.txtBTDevice);
-        CheckBox cb = (CheckBox)convertView.findViewById(R.id.chkBoxBTDevice);
+        convertView = inflater.inflate(R.layout.rowWithCB, parent, false);
+        TextView name = (TextView)convertView.findViewById(R.id.rowWithCB_Txt);
+        CheckBox cb = (CheckBox)convertView.findViewById(R.id.rowWithCB_ChkBox);
         name.setText(rowItems[position].getName());
 
         if(rowItems[position].getValue() == 1) {
