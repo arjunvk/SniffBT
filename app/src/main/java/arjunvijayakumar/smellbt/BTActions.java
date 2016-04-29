@@ -26,6 +26,14 @@ public class BTActions {
     }
 
     /**
+     * Method to check if Bluetooth is turned on or not
+     * @return - The {@link boolean} value that informs if Bluetooth is On or not
+     */
+    public boolean isBluetoothTurnedOn() {
+        return isBluetoothSupported() && baBTAdapter.isEnabled();
+    }
+
+    /**
      * Method to turn on Bluetooth
      * @return - The {@link boolean} value based on whether Bluetooth is turned on or not
      */
@@ -46,7 +54,6 @@ public class BTActions {
         }
 
         return !(!baBTAdapter.isEnabled() || intWait > INT_SHORT_WAIT);
-
     }
 
     /**
@@ -70,7 +77,6 @@ public class BTActions {
         }
 
         return !(baBTAdapter.isEnabled() || intWait > INT_SHORT_WAIT);
-
     }
 
     /**
