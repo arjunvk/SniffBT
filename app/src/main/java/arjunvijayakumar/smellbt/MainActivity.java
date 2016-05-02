@@ -1,51 +1,67 @@
 package arjunvijayakumar.smellbt;
 
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
-import arjunvijayakumar.smellbt.customRow.CustomAdapter;
-import arjunvijayakumar.smellbt.customRow.RowItem;
+import arjunvijayakumar.smellbt.customRowWithCB.CustomAdapter;
+import arjunvijayakumar.smellbt.customRowWithCB.RowItem;
 
 public class MainActivity extends AppCompatActivity {
 
     // Initialize variables
-    private BTActions btActions = null;
+    private BTActions btActions = new BTActions();
+    private RowItem[] arrPairedDevicesList;
+    private ArrayList<BluetoothDevice> arrDiscoveredDevicesList;
+    ArrayAdapter<String> btListAdapter;
+
+    // Initialize UI objects created during runtime
+    private ProgressDialog mProgressDlg;
 
     // Initialize constructor
-    public MainActivity(){
-        btActions = new BTActions();
-    }
+    //public MainActivity(){
+    //    btActions = new BTActions();
+    //}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Define the Progress Dialog if scanning is being done
+        mProgressDlg = new ProgressDialog(this);
+        mProgressDlg.setMessage("Scanning...");
+        mProgressDlg.setCancelable(false);
+        //mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface().OnClickListener() {
+        //    @Override
+        //    public void onClick(DialogInterface dialog, int which) {
+
+        //    }
+        //});
+
         // Set the custom ActionBar toolbar
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        // Add headers to List view
-        //ListView lvBTPairedDevices = (ListView)findViewById(R.id.lstPairedBTDevices);
-        //lvBTPairedDevices.addHeaderView(new TextView(this.).setText(getString(R.string.text_list_paired_devices)));
-
         // Set the method for refreshing list of Paired devices
-        final SwipeRefreshLayout refreshPairedDevices = (SwipeRefreshLayout)findViewById(R.id.lstPairedBTDevicesRefresh);
+        final SwipeRefreshLayout refreshPairedDevices = (SwipeRefreshLayout)findViewById(R.id.swipePairedBTDevicesRefresh);
         if (refreshPairedDevices != null) {
             refreshPairedDevices.setOnRefreshListener(
                     new SwipeRefreshLayout.OnRefreshListener() {
@@ -57,6 +73,31 @@ public class MainActivity extends AppCompatActivity {
                     }
             );
         }
+
+        // Set the method to refreshing list os Discovered devices
+        final SwipeRefreshLayout refreshDiscoveredDevices = (SwipeRefreshLayout)findViewById(R.id.swipeDiscoveredBTDevicesRefresh);
+        if(refreshDiscoveredDevices != null) {
+            refreshDiscoveredDevices.setOnRefreshListener(
+                    new SwipeRefreshLayout.OnRefreshListener() {
+                        @Override
+                        public void onRefresh() {
+                            if(btActions.isBluetoothTurnedOn()) {
+                                listDiscoveredBTDevices();
+                            }
+                            else {
+                                showToast("Please turn on Bluetooth");
+                            }
+                            refreshDiscoveredDevices.setRefreshing(false);
+                        }
+                    }
+            );
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        unregisterReceiver(mReceiver);
+        super.onDestroy();
     }
 
     @Override
@@ -76,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        boolean blnToReturn;
         switch (item.getItemId()) {
             case R.id.actionbar_Bluetooth:
                 if(btActions.isBluetoothTurnedOn()) {
@@ -88,10 +130,14 @@ public class MainActivity extends AppCompatActivity {
                     item.setIcon(R.drawable.ic_action_bt_on);
                     showToast(getString(R.string.text_bluetooth_on));
                 }
-                return true;
+                blnToReturn = true;
+                break;
+
             default:
-                return super.onOptionsItemSelected(item);
+                blnToReturn = super.onOptionsItemSelected(item);
+                break;
         }
+        return blnToReturn;
     }
 
     /**
@@ -106,14 +152,19 @@ public class MainActivity extends AppCompatActivity {
      * Method to list the already paired Bluetooth devices
      */
     private void listPairedBTDevices(){
-        RowItem[] pairedBTDevices;
         CustomAdapter customAdapter;
+        boolean blnIsBTOn = false;
 
-        pairedBTDevices = new RowItem[btActions.getPairedDevicesList().size()];
-
-        ListView listView = (ListView)findViewById(R.id.lstPairedBTDevices);
+        // Store the current state of Bluetooth
+        if(btActions.isBluetoothTurnedOn()) {
+            blnIsBTOn = true;
+        }
 
         btActions.turnOnBluetooth();
+
+        arrPairedDevicesList = new RowItem[btActions.getPairedDevicesList().size()];
+
+        ListView listView = (ListView)findViewById(R.id.lstPairedBTDevices);
 
         // Find the list of paired devices
         Set<BluetoothDevice> pairedDevices = btActions.getPairedDevicesList();
@@ -125,10 +176,10 @@ public class MainActivity extends AppCompatActivity {
                     // Loop through paired devices
                     for(int iCnt = 0; iCnt < pairedDevices.size(); iCnt++){
                         BluetoothDevice device = (BluetoothDevice)pairedDevices.toArray()[iCnt];
-                        pairedBTDevices[iCnt] = new RowItem(device.getName(),0);
+                        arrPairedDevicesList[iCnt] = new RowItem(device.getName(),0);
                     }
 
-                    customAdapter = new CustomAdapter(this, pairedBTDevices);
+                    customAdapter = new CustomAdapter(this, arrPairedDevicesList);
 
                     listView.setAdapter(customAdapter);
                 }
@@ -138,6 +189,61 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        btActions.turnOffBluetooth();
+        // Leave Bluetooth in the same state as it was before entering this function
+        if(!blnIsBTOn) {
+            btActions.turnOffBluetooth();
+        }
     }
+
+    /**
+     * Method to list the Discovered Bluetooth devices
+     */
+    private void listDiscoveredBTDevices(){
+        IntentFilter filter = new IntentFilter();
+        btListAdapter = new ArrayAdapter<>(this, R.layout.simple_row, R.id.simple_row_Txt);
+
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+
+        registerReceiver(mReceiver, filter);
+
+        if(btActions.isDiscovering()) {
+            btActions.cancelDiscovery();
+        }
+        btActions.startDiscovery();
+    }
+
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+
+            if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                arrDiscoveredDevicesList = new ArrayList<>();
+                mProgressDlg.show();
+            }
+            else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                mProgressDlg.dismiss();
+                showToast("Scan complete");
+                btListAdapter.clear();
+                for (int iCnt = 0; iCnt < arrDiscoveredDevicesList.size(); iCnt++) {
+                    btListAdapter.add(arrDiscoveredDevicesList.get(iCnt).getName());
+                }
+
+                final ListView lv = (ListView)findViewById(R.id.lstDiscoveredBTDevices);
+                lv.setAdapter(btListAdapter);
+
+                unregisterReceiver(mReceiver);
+            }
+            else if(BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if(device.getName() != null) {
+                    arrDiscoveredDevicesList.add(device);
+                    showToast("Found device " + device.getName());
+                }
+            }
+        }
+    };
 }

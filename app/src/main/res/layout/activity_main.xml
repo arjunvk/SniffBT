@@ -21,27 +21,42 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtBT" />
-
     <android.support.v4.widget.SwipeRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/lstPairedBTDevicesRefresh"
+        android:id="@+id/swipePairedBTDevicesRefresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="270dp"
         android:layout_below="@+id/my_toolbar"
         android:layout_marginTop="20dp"
-        android:paddingBottom="250dp" >
+        android:layout_alignEnd="@+id/my_toolbar"
+        android:elevation="4dp">
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/lstPairedBTDevices"
             android:elevation="4dp"
-            android:paddingBottom="2dp"
-            android:layout_below="@+id/my_toolbar"
+            android:layout_below="@+id/txtPairedDevices"
+            android:layout_marginTop="20dp"
+            android:background="#ffffff" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipeDiscoveredBTDevicesRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/swipePairedBTDevicesRefresh"
+        android:layout_marginTop="20dp">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lstDiscoveredBTDevices"
+            android:elevation="4dp"
+            android:layout_below="@+id/lstPairedBTDevicesRefresh"
             android:layout_marginTop="20dp"
             android:background="#ffffff" />
 

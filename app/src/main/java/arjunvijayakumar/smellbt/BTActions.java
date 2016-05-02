@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class BTActions {
 
-    BluetoothAdapter baBTAdapter;
+    private BluetoothAdapter baBTAdapter;
     final int INT_SHORT_WAIT = 5;
     private CommonFunctions cf;
 
@@ -83,16 +83,35 @@ public class BTActions {
      * Method to retrieve the list of Paired devices
      * @return - The list of paired devices
      */
-    public Set<BluetoothDevice> getPairedDevicesList(){
-        if(isBluetoothSupported()){
-            if(!baBTAdapter.isEnabled()){
-                turnOnBluetooth();
-            }
-        }
-        else{
+    public Set<BluetoothDevice> getPairedDevicesList() {
+        if (!isBluetoothSupported()) {
             return null;
         }
 
         return baBTAdapter.getBondedDevices();
+    }
+
+    /**
+     * Method to start discovery
+     */
+    public void startDiscovery(){
+        if(isBluetoothSupported()){
+            baBTAdapter.startDiscovery();
+        }
+    }
+
+    /**
+     * Method to check if Bluetooth is still discovering devices
+     * @return - The {@link boolean} vlaue to verify if devices are still being discovered or not
+     */
+    public boolean isDiscovering() {
+        return baBTAdapter.isDiscovering();
+    }
+
+    /**
+     * Method to cancel Bluetooth discovery
+     */
+    public void cancelDiscovery() {
+        baBTAdapter.cancelDiscovery();
     }
 }

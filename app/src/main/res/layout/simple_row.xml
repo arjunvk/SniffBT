@@ -4,14 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <CheckBox
-        android:id="@+id/rowWithCB_ChkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="18sp" />
     <TextView
-        android:id="@+id/rowWithCB_Txt"
+        android:id="@+id/simple_row_Txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp" />

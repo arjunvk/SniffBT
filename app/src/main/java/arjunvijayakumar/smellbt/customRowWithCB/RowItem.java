@@ -1,4 +1,4 @@
-package arjunvijayakumar.smellbt.customRow;
+package arjunvijayakumar.smellbt.customRowWithCB;
 
 public class RowItem {
     String name;
