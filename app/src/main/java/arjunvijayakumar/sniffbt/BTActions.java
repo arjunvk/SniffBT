@@ -1,4 +1,4 @@
-package arjunvijayakumar.smellbt;
+package arjunvijayakumar.sniffbt;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

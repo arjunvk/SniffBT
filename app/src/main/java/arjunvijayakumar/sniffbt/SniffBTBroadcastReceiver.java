@@ -1,4 +1,4 @@
-package arjunvijayakumar.smellbt;
+package arjunvijayakumar.sniffbt;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -9,14 +9,14 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-public class SmellBTBroadcastReceiver extends BroadcastReceiver {
+public class SniffBTBroadcastReceiver extends BroadcastReceiver {
 
     private ArrayList<BluetoothDevice> arrDiscoveredDevicesList;
     private boolean blnIsDiscoveryFinished = false;
     private boolean blnDisplayScanDialogWhileScanningBT = false;
-    private SmellBTInterface activity;
+    private SniffBTInterface activity;
 
-    public SmellBTBroadcastReceiver(SmellBTInterface activity, boolean blnDisplayScanDialogWhileScanningBT) {
+    public SniffBTBroadcastReceiver(SniffBTInterface activity, boolean blnDisplayScanDialogWhileScanningBT) {
         //super("SmellBT Broadcast Receiver");
         this.activity = activity;
         this.blnDisplayScanDialogWhileScanningBT = blnDisplayScanDialogWhileScanningBT;

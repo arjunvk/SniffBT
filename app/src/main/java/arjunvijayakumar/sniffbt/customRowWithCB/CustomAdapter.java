@@ -1,4 +1,4 @@
-package arjunvijayakumar.smellbt.customRowWithCB;
+package arjunvijayakumar.sniffbt.customRowWithCB;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import arjunvijayakumar.smellbt.R;
+import arjunvijayakumar.sniffbt.R;
 
 public class CustomAdapter extends ArrayAdapter<RowItem> {
     RowItem[] rowItems = null;

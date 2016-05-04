@@ -1,4 +1,4 @@
-package arjunvijayakumar.smellbt;
+package arjunvijayakumar.sniffbt;
 
 import android.app.IntentService;
 import android.content.Intent;

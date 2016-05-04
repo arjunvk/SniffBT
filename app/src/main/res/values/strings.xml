@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smell BT</string>
+    <string name="app_name">Sniff BT</string>
 
     <string name="bluetooth">Bluetooth</string>
 
@@ -18,5 +18,5 @@
 
     <string name="text_pair">Pair</string>
 
-    <string name="intent_Broadcast">smellbt.BROADCAST</string>
+    <string name="intent_Broadcast">sniffbt.BROADCAST</string>
 </resources>

@@ -1,4 +1,4 @@
-package arjunvijayakumar.smellbt;
+package arjunvijayakumar.sniffbt;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

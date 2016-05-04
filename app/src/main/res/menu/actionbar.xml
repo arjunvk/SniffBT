@@ -10,7 +10,7 @@
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/actionbar_SmellBT"
+        android:id="@+id/actionbar_SniffBT"
         android:title="@string/app_name"
         app:showAsAction="ifRoom"/>
 

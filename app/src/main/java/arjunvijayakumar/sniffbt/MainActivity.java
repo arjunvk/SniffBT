@@ -1,4 +1,4 @@
-package arjunvijayakumar.smellbt;
+package arjunvijayakumar.sniffbt;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -20,10 +20,10 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Set;
 
-import arjunvijayakumar.smellbt.customRowWithCB.CustomAdapter;
-import arjunvijayakumar.smellbt.customRowWithCB.RowItem;
+import arjunvijayakumar.sniffbt.customRowWithCB.CustomAdapter;
+import arjunvijayakumar.sniffbt.customRowWithCB.RowItem;
 
-public class MainActivity extends AppCompatActivity implements SmellBTInterface {
+public class MainActivity extends AppCompatActivity implements SniffBTInterface {
 
     // Initialize variables
     CommonFunctions cf = new CommonFunctions();
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements SmellBTInterface 
     private RowItem[] arrPairedDevicesList;
     private ArrayList<BluetoothDevice> arrDiscoveredDevicesList;
     ArrayAdapter<String> btListAdapter;
-    SmellBTBroadcastReceiver btaBR;
+    SniffBTBroadcastReceiver btaBR;
     private ProgressDialog mProgressDlg;
 
     // Initialize constructor
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements SmellBTInterface 
                 blnToReturn = true;
                 break;
 
-            case R.id.actionbar_SmellBT:
+            case R.id.actionbar_SniffBT:
                 // Start service to listen to BT
                 Intent intentListenBT = new Intent(getApplicationContext(), ListenBTIntentService.class);
                 Log.i(TAG, "Starting Intent Service...");
@@ -147,8 +147,8 @@ public class MainActivity extends AppCompatActivity implements SmellBTInterface 
 
                 // Register receiver to receive the BT list
                 IntentFilter intentFilterReceiveBT = new IntentFilter(getString(R.string.intent_Broadcast));
-                SmellBTBroadcastReceiver smellBTBRReceiveBTList = new SmellBTBroadcastReceiver(this, false);
-                registerReceiver(smellBTBRReceiveBTList, intentFilterReceiveBT);
+                SniffBTBroadcastReceiver sniffBTBRReceiveBTList = new SniffBTBroadcastReceiver(this, false);
+                registerReceiver(sniffBTBRReceiveBTList, intentFilterReceiveBT);
                 //ReceiveBTBroadcastReceiver receiveBT = new ReceiveBTBroadcastReceiver();
                 //registerReceiver(receiveRT, intentFilterReceiveBT);
 
@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements SmellBTInterface 
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction(BluetoothDevice.ACTION_FOUND);
 
-        btaBR = new SmellBTBroadcastReceiver(this, true);
+        btaBR = new SniffBTBroadcastReceiver(this, true);
         registerReceiver(btaBR, filter);
 
         if(btActions.isDiscovering()) {
