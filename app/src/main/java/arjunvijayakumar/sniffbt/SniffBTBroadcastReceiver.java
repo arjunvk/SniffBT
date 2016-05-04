@@ -16,6 +16,8 @@ public class SniffBTBroadcastReceiver extends BroadcastReceiver {
     private boolean blnDisplayScanDialogWhileScanningBT = false;
     private SniffBTInterface activity;
 
+    public SniffBTBroadcastReceiver() {}
+
     public SniffBTBroadcastReceiver(SniffBTInterface activity, boolean blnDisplayScanDialogWhileScanningBT) {
         //super("SmellBT Broadcast Receiver");
         this.activity = activity;

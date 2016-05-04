@@ -254,8 +254,8 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
         final ListView lv = (ListView)findViewById(R.id.lstDiscoveredBTDevices);
         lv.setAdapter(btListAdapter);
 
-        showToast("Scan complete");
         mProgressDlg.dismiss();
+        showToast("Scan complete");
         unregisterReceiver(btaBR);
     }
 
