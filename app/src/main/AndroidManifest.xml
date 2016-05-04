@@ -17,9 +17,18 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".ListenBTIntentService"
+            android:exported="false" />
+        <receiver
+            android:name=".SmellBTBroadcastReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="@string/intent_Broadcast" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

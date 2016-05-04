@@ -9,4 +9,9 @@
         android:icon="@drawable/ic_action_bt_off"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/actionbar_SmellBT"
+        android:title="@string/app_name"
+        app:showAsAction="ifRoom"/>
+
 </menu>

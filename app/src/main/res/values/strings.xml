@@ -17,4 +17,6 @@
     <string name="text_list_devices">List of Devices</string>
 
     <string name="text_pair">Pair</string>
+
+    <string name="intent_Broadcast">smellbt.BROADCAST</string>
 </resources>

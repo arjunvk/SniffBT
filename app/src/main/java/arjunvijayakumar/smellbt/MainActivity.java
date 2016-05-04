@@ -3,14 +3,13 @@ package arjunvijayakumar.smellbt;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,20 +23,21 @@ import java.util.Set;
 import arjunvijayakumar.smellbt.customRowWithCB.CustomAdapter;
 import arjunvijayakumar.smellbt.customRowWithCB.RowItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SmellBTInterface {
 
     // Initialize variables
+    CommonFunctions cf = new CommonFunctions();
+    final String TAG = "Main Activity";
     private BTActions btActions = new BTActions();
     private RowItem[] arrPairedDevicesList;
     private ArrayList<BluetoothDevice> arrDiscoveredDevicesList;
     ArrayAdapter<String> btListAdapter;
-
-    // Initialize UI objects created during runtime
+    SmellBTBroadcastReceiver btaBR;
     private ProgressDialog mProgressDlg;
 
     // Initialize constructor
     //public MainActivity(){
-    //    btActions = new BTActions();
+        //btActions = new BTActions();
     //}
 
     @Override
@@ -95,8 +95,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onDestroy() {
-        unregisterReceiver(mReceiver);
+        //unregisterReceiver(smellBTBRReceiveBTList);
         super.onDestroy();
     }
 
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         boolean blnToReturn;
         switch (item.getItemId()) {
             case R.id.actionbar_Bluetooth:
@@ -130,6 +136,23 @@ public class MainActivity extends AppCompatActivity {
                     item.setIcon(R.drawable.ic_action_bt_on);
                     showToast(getString(R.string.text_bluetooth_on));
                 }
+                blnToReturn = true;
+                break;
+
+            case R.id.actionbar_SmellBT:
+                // Start service to listen to BT
+                Intent intentListenBT = new Intent(getApplicationContext(), ListenBTIntentService.class);
+                Log.i(TAG, "Starting Intent Service...");
+                getApplicationContext().startService(intentListenBT);
+
+                // Register receiver to receive the BT list
+                IntentFilter intentFilterReceiveBT = new IntentFilter(getString(R.string.intent_Broadcast));
+                SmellBTBroadcastReceiver smellBTBRReceiveBTList = new SmellBTBroadcastReceiver(this, false);
+                registerReceiver(smellBTBRReceiveBTList, intentFilterReceiveBT);
+                //ReceiveBTBroadcastReceiver receiveBT = new ReceiveBTBroadcastReceiver();
+                //registerReceiver(receiveRT, intentFilterReceiveBT);
+
+
                 blnToReturn = true;
                 break;
 
@@ -207,25 +230,48 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction(BluetoothDevice.ACTION_FOUND);
 
-        registerReceiver(mReceiver, filter);
+        btaBR = new SmellBTBroadcastReceiver(this, true);
+        registerReceiver(btaBR, filter);
 
         if(btActions.isDiscovering()) {
             btActions.cancelDiscovery();
         }
+
+        // Start discovery
+        mProgressDlg.show();
         btActions.startDiscovery();
     }
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    /**
+     * Method to update the Discovered BT list
+     */
+    public void updateDiscoveredList() {
+        btListAdapter.clear();
+        arrDiscoveredDevicesList = btaBR.getDiscoveredDevicesList();
+        for (int iCnt = 0; iCnt < arrDiscoveredDevicesList.size(); iCnt++) {
+            btListAdapter.add(arrDiscoveredDevicesList.get(iCnt).getName());
+        }
+
+        final ListView lv = (ListView)findViewById(R.id.lstDiscoveredBTDevices);
+        lv.setAdapter(btListAdapter);
+
+        showToast("Scan complete");
+        mProgressDlg.dismiss();
+        unregisterReceiver(btaBR);
+    }
+
+    /*
+    private final BroadcastReceiver brBluetoothActionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
             if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 arrDiscoveredDevicesList = new ArrayList<>();
-                mProgressDlg.show();
+                //mProgressDlg.show();
             }
             else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                mProgressDlg.dismiss();
+                //mProgressDlg.dismiss();
                 showToast("Scan complete");
                 btListAdapter.clear();
                 for (int iCnt = 0; iCnt < arrDiscoveredDevicesList.size(); iCnt++) {
@@ -235,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
                 final ListView lv = (ListView)findViewById(R.id.lstDiscoveredBTDevices);
                 lv.setAdapter(btListAdapter);
 
-                unregisterReceiver(mReceiver);
+                unregisterReceiver(brBluetoothActionReceiver);
             }
             else if(BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -246,4 +292,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    */
 }
