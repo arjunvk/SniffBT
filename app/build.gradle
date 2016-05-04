@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "arjunvijayakumar.smellbt"
+        applicationId "arjunvijayakumar.sniffbt"
         minSdkVersion 23
         targetSdkVersion 22
         versionCode 1

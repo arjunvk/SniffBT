@@ -22,9 +22,7 @@ public class SniffBTBroadcastReceiver extends BroadcastReceiver {
         this.blnDisplayScanDialogWhileScanningBT = blnDisplayScanDialogWhileScanningBT;
     }
 
-    public ArrayList<BluetoothDevice> getDiscoveredDevicesList() {
-        return this.arrDiscoveredDevicesList;
-    }
+    public ArrayList<BluetoothDevice> getDiscoveredDevicesList() {return this.arrDiscoveredDevicesList; }
 
     public boolean isDiscoveryFinished() {
         return this.blnIsDiscoveryFinished;

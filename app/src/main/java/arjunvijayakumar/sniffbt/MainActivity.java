@@ -26,7 +26,6 @@ import arjunvijayakumar.sniffbt.customRowWithCB.RowItem;
 public class MainActivity extends AppCompatActivity implements SniffBTInterface {
 
     // Initialize variables
-    CommonFunctions cf = new CommonFunctions();
     final String TAG = "Main Activity";
     private BTActions btActions = new BTActions();
     private RowItem[] arrPairedDevicesList;
@@ -260,37 +259,4 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
         unregisterReceiver(btaBR);
     }
 
-    /*
-    private final BroadcastReceiver brBluetoothActionReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-
-            if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                arrDiscoveredDevicesList = new ArrayList<>();
-                //mProgressDlg.show();
-            }
-            else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                //mProgressDlg.dismiss();
-                showToast("Scan complete");
-                btListAdapter.clear();
-                for (int iCnt = 0; iCnt < arrDiscoveredDevicesList.size(); iCnt++) {
-                    btListAdapter.add(arrDiscoveredDevicesList.get(iCnt).getName());
-                }
-
-                final ListView lv = (ListView)findViewById(R.id.lstDiscoveredBTDevices);
-                lv.setAdapter(btListAdapter);
-
-                unregisterReceiver(brBluetoothActionReceiver);
-            }
-            else if(BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if(device.getName() != null) {
-                    arrDiscoveredDevicesList.add(device);
-                    showToast("Found device " + device.getName());
-                }
-            }
-        }
-    };
-    */
 }
