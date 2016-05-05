@@ -27,17 +27,19 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
 
     // Initialize variables
     final String TAG = "Main Activity";
-    private BTActions btActions = new BTActions();
+    private BTActions btActions;
     private RowItem[] arrPairedDevicesList;
     private ArrayList<BluetoothDevice> arrDiscoveredDevicesList;
     ArrayAdapter<String> btListAdapter;
-    SniffBTBroadcastReceiver btaBR;
+    SniffBTBroadcastReceiver btScan;
     private ProgressDialog mProgressDlg;
+    private SniffBT sniffBTObj;
 
     // Initialize constructor
-    //public MainActivity(){
-        //btActions = new BTActions();
-    //}
+    public MainActivity(){
+        btActions = new BTActions();
+        sniffBTObj = new SniffBT();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,8 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
                         @Override
                         public void onRefresh() {
                             if(btActions.isBluetoothTurnedOn()) {
-                                listDiscoveredBTDevices();
+                                sniffBTObj.setDisplayDiscoveredListFlag(true);
+                                initiateBTScan();
                             }
                             else {
                                 showToast("Please turn on Bluetooth");
@@ -146,7 +149,8 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
 
                 // Register receiver to receive the BT list
                 IntentFilter intentFilterReceiveBT = new IntentFilter(getString(R.string.intent_Broadcast));
-                SniffBTBroadcastReceiver sniffBTBRReceiveBTList = new SniffBTBroadcastReceiver(this, false);
+                //SniffBTBroadcastReceiver sniffBTBRReceiveBTList = new SniffBTBroadcastReceiver(this);
+                SniffBTBroadcastReceiver sniffBTBRReceiveBTList = new SniffBTBroadcastReceiver(this);
                 registerReceiver(sniffBTBRReceiveBTList, intentFilterReceiveBT);
                 //ReceiveBTBroadcastReceiver receiveBT = new ReceiveBTBroadcastReceiver();
                 //registerReceiver(receiveRT, intentFilterReceiveBT);
@@ -162,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
         return blnToReturn;
     }
 
+    public SniffBT getSniffBTObj() {
+        return this.sniffBTObj;
+    }
     /**
      * Method to display a message on the Toast widget
      * @param message - The {@link String} message to display
@@ -220,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
     /**
      * Method to list the Discovered Bluetooth devices
      */
-    private void listDiscoveredBTDevices(){
+    private void initiateBTScan(){
         IntentFilter filter = new IntentFilter();
         btListAdapter = new ArrayAdapter<>(this, R.layout.simple_row, R.id.simple_row_Txt);
 
@@ -229,8 +236,9 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction(BluetoothDevice.ACTION_FOUND);
 
-        btaBR = new SniffBTBroadcastReceiver(this, true);
-        registerReceiver(btaBR, filter);
+        //btScan = new SniffBTBroadcastReceiver(this);
+        btScan = new SniffBTBroadcastReceiver(this);
+        registerReceiver(btScan, filter);
 
         if(btActions.isDiscovering()) {
             btActions.cancelDiscovery();
@@ -242,11 +250,11 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
     }
 
     /**
-     * Method to update the Discovered BT list
+     * Method to display the Discovered BT list
      */
-    public void updateDiscoveredList() {
+    public void displayDiscoveredList() {
         btListAdapter.clear();
-        arrDiscoveredDevicesList = btaBR.getDiscoveredDevicesList();
+        arrDiscoveredDevicesList = btScan.getDiscoveredDevicesList();
         for (int iCnt = 0; iCnt < arrDiscoveredDevicesList.size(); iCnt++) {
             btListAdapter.add(arrDiscoveredDevicesList.get(iCnt).getName());
         }
@@ -256,7 +264,8 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
 
         mProgressDlg.dismiss();
         showToast("Scan complete");
-        unregisterReceiver(btaBR);
+        unregisterReceiver(btScan);
+        sniffBTObj.setDisplayDiscoveredListFlag(false);
     }
 
 }

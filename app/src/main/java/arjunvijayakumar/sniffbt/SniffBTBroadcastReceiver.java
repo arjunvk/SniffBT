@@ -13,15 +13,12 @@ public class SniffBTBroadcastReceiver extends BroadcastReceiver {
 
     private ArrayList<BluetoothDevice> arrDiscoveredDevicesList;
     private boolean blnIsDiscoveryFinished = false;
-    private boolean blnDisplayScanDialogWhileScanningBT = false;
-    private SniffBTInterface activity;
+    private SniffBTInterface activityInterface;
 
     public SniffBTBroadcastReceiver() {}
 
-    public SniffBTBroadcastReceiver(SniffBTInterface activity, boolean blnDisplayScanDialogWhileScanningBT) {
-        //super("SmellBT Broadcast Receiver");
-        this.activity = activity;
-        this.blnDisplayScanDialogWhileScanningBT = blnDisplayScanDialogWhileScanningBT;
+    public SniffBTBroadcastReceiver(SniffBTInterface activityInterface) {
+        this.activityInterface = activityInterface;
     }
 
     public ArrayList<BluetoothDevice> getDiscoveredDevicesList() {return this.arrDiscoveredDevicesList; }
@@ -39,9 +36,8 @@ public class SniffBTBroadcastReceiver extends BroadcastReceiver {
             arrDiscoveredDevicesList = new ArrayList<>();
         }
         else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-            if(this.blnDisplayScanDialogWhileScanningBT) {
-                blnIsDiscoveryFinished = true;
-                this.activity.updateDiscoveredList();
+            if(this.activityInterface.getSniffBTObj().getDisplayDiscoveredListFlag()) {
+                this.activityInterface.displayDiscoveredList();
             }
             blnIsDiscoveryFinished = true;
         }
