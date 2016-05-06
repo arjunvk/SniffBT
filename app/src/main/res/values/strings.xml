@@ -19,4 +19,5 @@
     <string name="text_pair">Pair</string>
 
     <string name="intent_reason_alarm_receiver">Alarm Received</string>
+    <string name="intent_reason_sniff_bt_devices">Sniff Devices</string>
 </resources>

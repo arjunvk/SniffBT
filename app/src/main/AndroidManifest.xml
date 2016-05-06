@@ -25,7 +25,6 @@
             android:exported="false" />
         <receiver
             android:name=".SniffBTBroadcastReceiver"
-            android:enabled="true" >
-        </receiver>
+            android:enabled="true" />
     </application>
 </manifest>

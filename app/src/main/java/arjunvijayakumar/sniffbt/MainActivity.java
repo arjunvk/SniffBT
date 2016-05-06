@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -186,9 +187,14 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
         return this.sniffBTObj;
     }
 
+    public RowItem[] getPairedDevicesList() {
+        return arrPairedDevicesList;
+    }
+
     /**
      * Method to list the Discovered Bluetooth devices
      */
+    @Override
     public void initiateBTScan(){
         IntentFilter filter = new IntentFilter();
 
@@ -210,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
     /**
      * Method to end the BT scan by unregistering service
      */
+    @Override
     public void endBTScan() {
         unregisterReceiver(btScan);
     }

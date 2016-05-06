@@ -17,11 +17,18 @@ public class BTActions {
     }
 
     /**
+     * Method to initialize the Bluetooth adapter
+     */
+    public void setBTAdapter() {
+        baBTAdapter = BluetoothAdapter.getDefaultAdapter();
+    }
+
+    /**
      * Method to verify if Bluetooth is supported in the device
      * @return - The {@link boolean} value is Bluetooth is supported or not
      */
     public boolean isBluetoothSupported(){
-        baBTAdapter = BluetoothAdapter.getDefaultAdapter();
+        setBTAdapter();
         return !(baBTAdapter == null);
     }
 
