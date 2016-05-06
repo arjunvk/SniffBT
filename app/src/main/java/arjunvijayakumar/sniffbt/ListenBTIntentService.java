@@ -1,8 +1,14 @@
 package arjunvijayakumar.sniffbt;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.util.Log;
+
+import arjunvijayakumar.sniffbt.customRowWithCB.RowItem;
 
 public class ListenBTIntentService extends IntentService {
 
@@ -12,10 +18,29 @@ public class ListenBTIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent workIntent) {
-        final String TAG = "Smell BT Intent Service";
-        Log.i(TAG, "Inside Intent Service...");
+        final String TAG = "SniffBT Intent Service";
+        AlarmManager alarmMgr;
+        PendingIntent alarmPendingIntent;
+        Intent alarmIntent;
+        RowItem[] arrPairedDevicesList = (RowItem[])workIntent.getSerializableExtra("PairedDevicesList");
 
-        Intent localIntent = new Intent(getString(R.string.intent_Broadcast));
+        //Log.i(TAG, "Inside Intent Service...");
+
+        int interval = 1000 * 2;
+
+        alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmIntent = new Intent(this, SniffBTBroadcastReceiver.class);
+        alarmIntent.putExtra("IntentReason", getString(R.string.intent_reason_alarm_receiver));
+        alarmPendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+        //alarmMgr.setInexactRepeating();
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + interval, alarmPendingIntent);
+        //alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), interval, alarmPendingIntent);
+
+
+
+
+        Intent localIntent = new Intent(getString(R.string.intent_reason_alarm_receiver));
         Log.i(TAG, "Sending Broadcast...");
         sendBroadcast(localIntent);
     }

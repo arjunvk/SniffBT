@@ -29,7 +29,7 @@ public class SniffBTBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        final String TAG = "Smell BT Broadcast Receiver";
+        final String TAG = "SniffBT Broadcast Receiver";
         String action = intent.getAction();
 
         if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
@@ -39,6 +39,9 @@ public class SniffBTBroadcastReceiver extends BroadcastReceiver {
             if(this.activityInterface.getSniffBTObj().getDisplayDiscoveredListFlag()) {
                 this.activityInterface.displayDiscoveredList();
             }
+            else{
+                this.activityInterface.verifyIfAnyNearbyDeviceIsKnown(arrDiscoveredDevicesList);
+            }
             blnIsDiscoveryFinished = true;
         }
         else if(BluetoothDevice.ACTION_FOUND.equals(action)) {
@@ -47,8 +50,11 @@ public class SniffBTBroadcastReceiver extends BroadcastReceiver {
                 arrDiscoveredDevicesList.add(device);
             }
         }
-        else if(context.getString(R.string.intent_Broadcast).equals(action)){
-            Log.i(TAG, "Received");
+        else if(context.getString(R.string.intent_reason_alarm_receiver).equals(intent.getStringExtra("IntentReason"))){
+            // Alarm has been received to initiate scan
+            Log.i(TAG, intent.getStringExtra("IntentReason"));
+
+            this.activityInterface.initiateBTScan();
         }
     }
 }

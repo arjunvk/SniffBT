@@ -1,11 +1,18 @@
 package arjunvijayakumar.sniffbt;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,11 +41,15 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
     SniffBTBroadcastReceiver btScan;
     private ProgressDialog mProgressDlg;
     private SniffBT sniffBTObj;
+    private AlarmManager alarmMgr;
+    private PendingIntent alarmPendingIntent;
+    private Intent alarmIntent;
 
     // Initialize constructor
     public MainActivity(){
         btActions = new BTActions();
         sniffBTObj = new SniffBT();
+        btScan = new SniffBTBroadcastReceiver(this);
     }
 
     @Override
@@ -84,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
                         public void onRefresh() {
                             if(btActions.isBluetoothTurnedOn()) {
                                 sniffBTObj.setDisplayDiscoveredListFlag(true);
+                                mProgressDlg.show();
                                 initiateBTScan();
                             }
                             else {
@@ -145,16 +157,20 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
                 // Start service to listen to BT
                 Intent intentListenBT = new Intent(getApplicationContext(), ListenBTIntentService.class);
                 Log.i(TAG, "Starting Intent Service...");
+
+                // Add the PairedDevicesList to the Intent
+                intentListenBT.putExtra("PairedDevicesList", arrPairedDevicesList);
                 getApplicationContext().startService(intentListenBT);
 
                 // Register receiver to receive the BT list
-                IntentFilter intentFilterReceiveBT = new IntentFilter(getString(R.string.intent_Broadcast));
+                //IntentFilter intentFilterReceiveBT = new IntentFilter(getString(R.string.intent_Broadcast));
                 //SniffBTBroadcastReceiver sniffBTBRReceiveBTList = new SniffBTBroadcastReceiver(this);
-                SniffBTBroadcastReceiver sniffBTBRReceiveBTList = new SniffBTBroadcastReceiver(this);
-                registerReceiver(sniffBTBRReceiveBTList, intentFilterReceiveBT);
+                //SniffBTBroadcastReceiver sniffBTBRReceiveBTList = new SniffBTBroadcastReceiver(this);
+                //registerReceiver(sniffBTBRReceiveBTList, intentFilterReceiveBT);
                 //ReceiveBTBroadcastReceiver receiveBT = new ReceiveBTBroadcastReceiver();
                 //registerReceiver(receiveRT, intentFilterReceiveBT);
 
+                //startScheduler();
 
                 blnToReturn = true;
                 break;
@@ -169,11 +185,56 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
     public SniffBT getSniffBTObj() {
         return this.sniffBTObj;
     }
+
+    /**
+     * Method to list the Discovered Bluetooth devices
+     */
+    public void initiateBTScan(){
+        IntentFilter filter = new IntentFilter();
+
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+
+        registerReceiver(btScan, filter);
+
+        if(btActions.isDiscovering()) {
+            btActions.cancelDiscovery();
+        }
+
+        // Start discovery
+        btActions.startDiscovery();
+    }
+
+    /**
+     * Method to end the BT scan by unregistering service
+     */
+    public void endBTScan() {
+        unregisterReceiver(btScan);
+    }
+
+    /**
+     * Method to check if any of the nearby devices is part of the Paired list
+     */
+    public void verifyIfAnyNearbyDeviceIsKnown(ArrayList<BluetoothDevice> arrCurrentNearbyDevices) {
+        for(BluetoothDevice nearbyDevice : arrCurrentNearbyDevices ) {
+            for(RowItem pairedDevice : arrPairedDevicesList) {
+                if(pairedDevice.getName().equals(nearbyDevice.getName())){
+                    Log.i(TAG, "Paired device '" + pairedDevice.getName() + "' found");
+
+                    // Turn on Bluetooth
+                    btActions.turnOnBluetooth();
+                }
+            }
+        }
+    }
+
     /**
      * Method to display a message on the Toast widget
      * @param message - The {@link String} message to display
      */
-    public void showToast(String message) {
+    private void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -225,34 +286,10 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
     }
 
     /**
-     * Method to list the Discovered Bluetooth devices
-     */
-    private void initiateBTScan(){
-        IntentFilter filter = new IntentFilter();
-        btListAdapter = new ArrayAdapter<>(this, R.layout.simple_row, R.id.simple_row_Txt);
-
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-
-        //btScan = new SniffBTBroadcastReceiver(this);
-        btScan = new SniffBTBroadcastReceiver(this);
-        registerReceiver(btScan, filter);
-
-        if(btActions.isDiscovering()) {
-            btActions.cancelDiscovery();
-        }
-
-        // Start discovery
-        mProgressDlg.show();
-        btActions.startDiscovery();
-    }
-
-    /**
      * Method to display the Discovered BT list
      */
     public void displayDiscoveredList() {
+        btListAdapter = new ArrayAdapter<>(this, R.layout.simple_row, R.id.simple_row_Txt);
         btListAdapter.clear();
         arrDiscoveredDevicesList = btScan.getDiscoveredDevicesList();
         for (int iCnt = 0; iCnt < arrDiscoveredDevicesList.size(); iCnt++) {
@@ -264,8 +301,35 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
 
         mProgressDlg.dismiss();
         showToast("Scan complete");
-        unregisterReceiver(btScan);
+        endBTScan();
         sniffBTObj.setDisplayDiscoveredListFlag(false);
+    }
+
+    /**
+     * Method to start an AlarmManager that starts a scheduled alarm
+     */
+    private void startScheduler() {
+        int interval = 1000 * 2;
+
+        alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmIntent = new Intent(this, SniffBTBroadcastReceiver.class);
+        alarmIntent.putExtra("IntentReason", getString(R.string.intent_reason_alarm_receiver));
+        //alarmIntent.putExtra("MainActivity", this);
+        alarmPendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+        //alarmMgr.setInexactRepeating();
+        alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + interval, alarmPendingIntent);
+        //alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), interval, alarmPendingIntent);
+
+    }
+
+    /**
+     * Method to stop the scheduled alarm
+     */
+    private void stopScheduler() {
+        if(alarmMgr != null && alarmPendingIntent != null) {
+            alarmMgr.cancel(alarmPendingIntent);
+        }
     }
 
 }

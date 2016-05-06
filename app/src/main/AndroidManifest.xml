@@ -26,9 +26,6 @@
         <receiver
             android:name=".SniffBTBroadcastReceiver"
             android:enabled="true" >
-            <intent-filter>
-                <action android:name="@string/intent_Broadcast" />
-            </intent-filter>
         </receiver>
     </application>
 </manifest>

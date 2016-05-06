@@ -1,6 +1,8 @@
 package arjunvijayakumar.sniffbt.customRowWithCB;
 
-public class RowItem {
+import java.io.Serializable;
+
+public class RowItem implements Serializable {
     String name;
     int value; /* 0 -> Checkbox deselected ; 1 -> Checkbox selected */
 

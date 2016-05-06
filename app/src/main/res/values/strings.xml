@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sniff BT</string>
 
-    <string name="bluetooth">Bluetooth</string>
+    <string name="text_bluetooth">Bluetooth</string>
 
     <string name="text_bluetooth_off">Bluetooth is Off</string>
     <string name="text_bluetooth_on">Bluetooth is On</string>
@@ -18,5 +18,5 @@
 
     <string name="text_pair">Pair</string>
 
-    <string name="intent_Broadcast">sniffbt.BROADCAST</string>
+    <string name="intent_reason_alarm_receiver">Alarm Received</string>
 </resources>

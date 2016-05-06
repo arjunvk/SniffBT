@@ -5,7 +5,7 @@
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
         android:id="@+id/actionbar_Bluetooth"
-        android:title="@string/bluetooth"
+        android:title="@string/text_bluetooth"
         android:icon="@drawable/ic_action_bt_off"
         app:showAsAction="ifRoom"/>
 
