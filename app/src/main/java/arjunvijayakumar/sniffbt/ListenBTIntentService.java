@@ -30,18 +30,13 @@ public class ListenBTIntentService extends IntentService {
 
         alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmIntent = new Intent(this, SniffBTBroadcastReceiver.class);
-        alarmIntent.putExtra("IntentReason", getString(R.string.intent_reason_alarm_receiver));
+        alarmIntent.putExtra("IntentReason", getString(R.string.intent_reason_sniff_bt_devices));
+        alarmIntent.putExtra("PairedDevicesList", arrPairedDevicesList);
         alarmPendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
         //alarmMgr.setInexactRepeating();
         alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + interval, alarmPendingIntent);
         //alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), interval, alarmPendingIntent);
 
-
-
-
-        Intent localIntent = new Intent(getString(R.string.intent_reason_alarm_receiver));
-        Log.i(TAG, "Sending Broadcast...");
-        sendBroadcast(localIntent);
     }
 }
