@@ -2,8 +2,15 @@ package arjunvijayakumar.sniffbt;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
+import android.os.ParcelUuid;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.ConnectException;
 import java.util.Set;
+import java.util.UUID;
 
 public class BTActions {
 
@@ -21,6 +28,10 @@ public class BTActions {
      */
     public void setBTAdapter() {
         baBTAdapter = BluetoothAdapter.getDefaultAdapter();
+    }
+
+    public BluetoothAdapter getBTAdapter() {
+        return this.baBTAdapter;
     }
 
     /**
@@ -120,5 +131,26 @@ public class BTActions {
      */
     public void cancelDiscovery() {
         baBTAdapter.cancelDiscovery();
+    }
+
+    public void connectToDevice(BluetoothDevice device) {
+        BluetoothSocket socket = null;
+        try {
+            Method getUuidsMethod = BluetoothAdapter.class.getDeclaredMethod("getUuids", null);
+            ParcelUuid[] uuids = (ParcelUuid[]) getUuidsMethod.invoke(baBTAdapter, null);
+            final UUID MY_UUID_SECURE =
+                    UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+            //socket = device.createRfcommSocketToServiceRecord(MY_UUID_SECURE);
+            socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
+            socket.connect();
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
+        catch (IOException connectException) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

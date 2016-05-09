@@ -24,7 +24,7 @@
             android:name=".ListenBTIntentService"
             android:exported="false" />
         <receiver
-            android:name=".SniffBTBroadcastReceiver"
+            android:name=".AlarmReceiver"
             android:enabled="true" />
     </application>
 </manifest>
