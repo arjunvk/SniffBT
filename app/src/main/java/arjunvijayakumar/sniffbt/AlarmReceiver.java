@@ -22,6 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver{
     RowItem[] arrPairedDevicesList;
     CommonFunctions cf = new CommonFunctions();
     Context context;
+    BluetoothDevice btFoundPairedDevice = null;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -43,6 +44,8 @@ public class AlarmReceiver extends BroadcastReceiver{
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction("android.bluetooth.device.action.UUID");
 
         this.context.getApplicationContext().registerReceiver(btBroadcastReceiver, filter);
 
@@ -59,12 +62,11 @@ public class AlarmReceiver extends BroadcastReceiver{
      */
     public void verifyIfAnyNearbyDeviceIsKnown() {
         boolean blnPairedDeviceFound = false;
-        BluetoothDevice btFoundDevice = null;
         for(BluetoothDevice nearbyDevice : arrDiscoveredDevicesList ) {
             for(RowItem pairedDevice : arrPairedDevicesList) {
                 if(pairedDevice.getName().equals(nearbyDevice.getName())){
                     blnPairedDeviceFound = true;
-                    btFoundDevice = nearbyDevice;
+                    btFoundPairedDevice = nearbyDevice;
                     Log.i(TAG, "Paired device '" + pairedDevice.getName() + "' found");
                     cf.displayNotification(this.context, "Device Found",
                                            pairedDevice.getName(), MainActivity.class);
@@ -80,12 +82,15 @@ public class AlarmReceiver extends BroadcastReceiver{
                                    "Turning off bluetooth... TATA ba bye lol", MainActivity.class);
             btActions.turnOffBluetooth();
         }
+
+        /*
         else {
             // Connect to the 'found' device
             btActions.connectToDevice(btFoundDevice);
         }
 
         this.context.getApplicationContext().unregisterReceiver(btBroadcastReceiver);
+        */
     }
 
     private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {
@@ -107,7 +112,12 @@ public class AlarmReceiver extends BroadcastReceiver{
             else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 verifyIfAnyNearbyDeviceIsKnown();
             }
-
+            else if(BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                if(btFoundPairedDevice != null) {
+                    Log.i(TAG, "Bluetooth device '" + btFoundPairedDevice.getName() + "' connected successfully");
+                }
+                context.getApplicationContext().unregisterReceiver(btBroadcastReceiver);
+            }
         }
     };
 }

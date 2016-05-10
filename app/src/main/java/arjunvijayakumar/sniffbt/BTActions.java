@@ -3,7 +3,10 @@ package arjunvijayakumar.sniffbt;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.os.ParcelUuid;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -17,6 +20,7 @@ public class BTActions {
     private BluetoothAdapter baBTAdapter;
     final int INT_SHORT_WAIT = 5;
     private CommonFunctions cf;
+    private UUID appUUID = null;
 
     public BTActions(){
         baBTAdapter = null;
@@ -134,23 +138,66 @@ public class BTActions {
     }
 
     public void connectToDevice(BluetoothDevice device) {
+
+
         BluetoothSocket socket = null;
+        ParcelUuid[] uuids = null;
         try {
             Method getUuidsMethod = BluetoothAdapter.class.getDeclaredMethod("getUuids", null);
-            ParcelUuid[] uuids = (ParcelUuid[]) getUuidsMethod.invoke(baBTAdapter, null);
-            final UUID MY_UUID_SECURE =
-                    UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+            //ParcelUuid[] uuids = (ParcelUuid[]) getUuidsMethod.invoke(baBTAdapter, null);
+            uuids = device.getUuids();
+            //device.fetchUuidsWithSdp();
+            final UUID MY_UUID_SECURE = UUID.fromString("00000001-0000-1000-8000-00805F9B34FB");
+            //final UUID MY_UUID_SECURE = UUID.randomUUID();
 
-            //socket = device.createRfcommSocketToServiceRecord(MY_UUID_SECURE);
-            socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
+            socket = device.createRfcommSocketToServiceRecord(MY_UUID_SECURE);
+            //socket = device.createInsecureRfcommSocketToServiceRecord(uuids[0].getUuid());
+            //socket = device.createRfcommSocketToServiceRecord(uuids[0].getUuid());
+            //socket = device.createRfcommSocketToServiceRecord(uuids[1].getUuid());
             socket.connect();
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {}
+        } catch (NoSuchMethodException ignored) {}
         catch (IOException connectException) {
             try {
+                Class<?> clazz = socket.getRemoteDevice().getClass();
+                Class<?>[] paramTypes = new Class<?>[] {Integer.TYPE};
+                Method m = clazz.getMethod("createRfcommSocket", paramTypes);
+                Object[] params = new Object[] {Integer.valueOf(1)};
+                //BluetoothSocket fallback = (BluetoothSocket) m.invoke(socket.getRemoteDevice(), params);
+                //BluetoothSocket fallback =(BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(device,1);
+                BluetoothSocket fallback =(BluetoothSocket) device.getClass().getMethod("createRfcommSocketToServiceRecord", new Class[] {UUID.class}).invoke(device,uuids[0].getUuid());
+                fallback.connect();
                 socket.close();
-            } catch (IOException e) {
+            } catch (IOException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }
     }
+
+    /**
+     * Method to generate a UUID for the application
+     * @return - The {@link UUID}
+     */
+    /*
+    private UUID generateUUID() {
+        String android_id = Settings.Secure.getString(getApplicationContext()
+                .getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        final TelephonyManager tm = (TelephonyManager) getBaseContext()
+                .getSystemService(Context.TELEPHONY_SERVICE);
+
+        final String tmDevice, tmSerial, androidId;
+        tmDevice = "" + tm.getDeviceId();
+        //Log.i("System out", "tmDevice : " + tmDevice);
+        tmSerial = "" + tm.getSimSerialNumber();
+        //Log.i("System out", "tmSerial : " + tmSerial);
+        androidId = "" + android.provider.Settings.Secure.getString(
+                    getContentResolver(),
+                    android.provider.Settings.Secure.ANDROID_ID);
+
+        UUID deviceUuid = new UUID(androidId.hashCode(), ((long) tmDevice
+                .hashCode() << 32)
+                | tmSerial.hashCode());
+        return deviceUuid.toString();
+    }
+    */
 }
