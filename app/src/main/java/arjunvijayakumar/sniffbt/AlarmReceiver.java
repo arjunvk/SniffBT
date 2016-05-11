@@ -6,10 +6,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Parcelable;
 import android.util.Log;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import arjunvijayakumar.sniffbt.customRowWithCB.RowItem;
@@ -22,7 +20,6 @@ public class AlarmReceiver extends BroadcastReceiver{
     RowItem[] arrPairedDevicesList;
     CommonFunctions cf = new CommonFunctions();
     Context context;
-    BluetoothDevice btFoundPairedDevice = null;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -62,11 +59,13 @@ public class AlarmReceiver extends BroadcastReceiver{
      */
     public void verifyIfAnyNearbyDeviceIsKnown() {
         boolean blnPairedDeviceFound = false;
+        //BluetoothDevice btFoundPairedDevice = null;
+
         for(BluetoothDevice nearbyDevice : arrDiscoveredDevicesList ) {
             for(RowItem pairedDevice : arrPairedDevicesList) {
                 if(pairedDevice.getName().equals(nearbyDevice.getName())){
                     blnPairedDeviceFound = true;
-                    btFoundPairedDevice = nearbyDevice;
+                    //btFoundPairedDevice = nearbyDevice;
                     Log.i(TAG, "Paired device '" + pairedDevice.getName() + "' found");
                     cf.displayNotification(this.context, "Device Found",
                                            pairedDevice.getName(), MainActivity.class);
@@ -113,8 +112,8 @@ public class AlarmReceiver extends BroadcastReceiver{
                 verifyIfAnyNearbyDeviceIsKnown();
             }
             else if(BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                if(btFoundPairedDevice != null) {
-                    Log.i(TAG, "Bluetooth device '" + btFoundPairedDevice.getName() + "' connected successfully");
+                if(device != null) {
+                    Log.i(TAG, "Bluetooth device '" + device.getName() + "' connected successfully");
                 }
                 context.getApplicationContext().unregisterReceiver(btBroadcastReceiver);
             }
