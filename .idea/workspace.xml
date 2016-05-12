@@ -10,7 +10,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3b562dbf-c18c-41ee-9d5d-ddb0e18d4bbe" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/app.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/arjunvijayakumar/sniffbt/AlarmReceiver.java" afterPath="$PROJECT_DIR$/app/src/main/java/arjunvijayakumar/sniffbt/AlarmReceiver.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/arjunvijayakumar/sniffbt/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/arjunvijayakumar/sniffbt/MainActivity.java" />
