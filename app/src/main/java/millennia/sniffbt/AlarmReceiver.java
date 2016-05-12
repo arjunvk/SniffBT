@@ -1,4 +1,4 @@
-package arjunvijayakumar.sniffbt;
+package millennia.sniffbt;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -6,13 +6,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Parcelable;
 import android.util.Log;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
-import arjunvijayakumar.sniffbt.customRowWithCB.RowItem;
+import millennia.sniffbt.customRowWithCB.RowItem;
 
 public class AlarmReceiver extends BroadcastReceiver{
 

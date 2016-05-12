@@ -1,20 +1,14 @@
-package arjunvijayakumar.sniffbt;
+package millennia.sniffbt;
 
 import android.app.AlarmManager;
 import android.app.IntentService;
 import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.SystemClock;
 import android.util.Log;
 
-import java.util.ArrayList;
-
-import arjunvijayakumar.sniffbt.customRowWithCB.RowItem;
+import millennia.sniffbt.customRowWithCB.RowItem;
 
 public class ListenBTIntentService extends IntentService {
 

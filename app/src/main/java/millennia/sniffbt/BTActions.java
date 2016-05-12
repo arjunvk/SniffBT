@@ -1,4 +1,4 @@
-package arjunvijayakumar.sniffbt;
+package millennia.sniffbt;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

@@ -1,4 +1,4 @@
-package arjunvijayakumar.sniffbt;
+package millennia.sniffbt;
 
 import org.junit.Test;
 

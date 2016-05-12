@@ -1,4 +1,4 @@
-package arjunvijayakumar.sniffbt;
+package millennia.sniffbt;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;

@@ -1,19 +1,13 @@
-package arjunvijayakumar.sniffbt;
+package millennia.sniffbt;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,12 +19,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 
-import arjunvijayakumar.sniffbt.customRowWithCB.CustomAdapter;
-import arjunvijayakumar.sniffbt.customRowWithCB.RowItem;
+import millennia.sniffbt.customRowWithCB.CustomAdapter;
+import millennia.sniffbt.customRowWithCB.RowItem;
 
 public class MainActivity extends AppCompatActivity implements SniffBTInterface {
 

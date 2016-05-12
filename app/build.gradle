@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "arjunvijayakumar.sniffbt"
+        applicationId "millennia.sniffbt"
         minSdkVersion 23
         targetSdkVersion 22
         versionCode 1
