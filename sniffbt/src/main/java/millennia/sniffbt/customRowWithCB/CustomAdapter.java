@@ -22,20 +22,28 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        //RowItem riBTDevice = new RowItem(rowItems[position].getName(), rowItems[position].getValue());
         LayoutInflater inflater = ((Activity)context).getLayoutInflater();
         convertView = inflater.inflate(R.layout.row_with_cb, parent, false);
         TextView name = (TextView)convertView.findViewById(R.id.row_with_cb_Txt);
         CheckBox cb = (CheckBox)convertView.findViewById(R.id.row_with_cb_ChkBox);
         name.setText(rowItems[position].getName());
 
-        if(rowItems[position].getValue() == 1) {
-            cb.setChecked(true);
-        }
-        else {
-            cb.setChecked(false);
-        }
+        cb.setChecked(rowItems[position].getValue());
+
+        // Create a onClickListener when a checkbox is selected
+        cb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+                rowItems[position].setValue(cb.isChecked());
+            }
+        });
+
         return convertView;
     }
+
+    public RowItem[] getRowItems() {return this.rowItems;}
 
 }

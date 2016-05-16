@@ -60,35 +60,32 @@ public class AlarmReceiver extends BroadcastReceiver{
      */
     public void verifyIfAnyNearbyDeviceIsKnown() {
         boolean blnPairedDeviceFound = false;
-        for(BluetoothDevice nearbyDevice : arrDiscoveredDevicesList ) {
-            for(RowItem pairedDevice : arrPairedDevicesList) {
-                if(pairedDevice.getName().equals(nearbyDevice.getName())){
-                    blnPairedDeviceFound = true;
-                    btFoundPairedDevice = nearbyDevice;
-                    Log.i(TAG, "Paired device '" + pairedDevice.getName() + "' found");
-                    cf.displayNotification(this.context, "Device Found",
-                                           pairedDevice.getName(), MainActivity.class);
-                    // Turn on Bluetooth
-                    btActions.turnOnBluetooth();
-                    break;
+        if(arrDiscoveredDevicesList != null) {
+            for(BluetoothDevice nearbyDevice : arrDiscoveredDevicesList ) {
+                for(RowItem pairedDevice : arrPairedDevicesList) {
+                    if(pairedDevice.getName().equals(nearbyDevice.getName())){
+                        if(pairedDevice.getValue()){
+                            blnPairedDeviceFound = true;
+                            btFoundPairedDevice = nearbyDevice;
+                            Log.i(TAG, "Paired device '" + pairedDevice.getName() + "' found");
+                            cf.displayNotification(this.context, "Device Found",
+                                    pairedDevice.getName(), MainActivity.class);
+                            // Turn on Bluetooth
+                            btActions.turnOnBluetooth();
+                            break;
+                        }
+                    }
                 }
+            }
+
+            if(!blnPairedDeviceFound) {
+                cf.displayNotification(this.context, "No Device Found",
+                        "Turning off bluetooth... TATA ba bye lol", MainActivity.class);
+                btActions.turnOffBluetooth();
             }
         }
 
-        if(!blnPairedDeviceFound) {
-            cf.displayNotification(this.context, "No Device Found",
-                                   "Turning off bluetooth... TATA ba bye lol", MainActivity.class);
-            btActions.turnOffBluetooth();
-        }
-
-        /*
-        else {
-            // Connect to the 'found' device
-            btActions.connectToDevice(btFoundDevice);
-        }
-
         this.context.getApplicationContext().unregisterReceiver(btBroadcastReceiver);
-        */
     }
 
     private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {

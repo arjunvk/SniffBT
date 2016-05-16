@@ -4,10 +4,18 @@ import java.io.Serializable;
 
 public class RowItem implements Serializable {
     String name;
-    int value; /* 0 -> Checkbox deselected ; 1 -> Checkbox selected */
+    boolean value;
 
-    public RowItem(String name, int value) {
+    public RowItem(String name, boolean value) {
         this.name = name;
+        this.value = value;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setValue(boolean value) {
         this.value = value;
     }
 
@@ -15,7 +23,7 @@ public class RowItem implements Serializable {
         return this.name;
     }
 
-    public int getValue() {
+    public boolean getValue() {
         return this.value;
     }
 }
