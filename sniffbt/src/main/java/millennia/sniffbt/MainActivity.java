@@ -279,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void saveSettingsToScanPairedDevices() {
         if(lvPairedDevicesList != null) {
+            arrPairedDevicesList = null;
             CustomAdapter ca = (CustomAdapter) lvPairedDevicesList.getAdapter();
             arrPairedDevicesList = ca.getRowItems();
         }

@@ -38,12 +38,10 @@ public class AlarmReceiver extends BroadcastReceiver{
         btActions = new BTActions();
         btActions.turnOnBluetooth();
 
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-        filter.addAction("android.bluetooth.device.action.UUID");
 
         this.context.getApplicationContext().registerReceiver(btBroadcastReceiver, filter);
 
@@ -64,7 +62,7 @@ public class AlarmReceiver extends BroadcastReceiver{
             for(BluetoothDevice nearbyDevice : arrDiscoveredDevicesList ) {
                 for(RowItem pairedDevice : arrPairedDevicesList) {
                     if(pairedDevice.getName().equals(nearbyDevice.getName())){
-                        if(pairedDevice.getValue()){
+                        if(pairedDevice.isCBChecked()){
                             blnPairedDeviceFound = true;
                             btFoundPairedDevice = nearbyDevice;
                             Log.i(TAG, "Paired device '" + pairedDevice.getName() + "' found");
