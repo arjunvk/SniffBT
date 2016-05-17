@@ -32,7 +32,7 @@ public class ListenBTIntentService extends IntentService {
         alarmIntent = new Intent(this, AlarmReceiver.class);
         //alarmIntent.putExtra("IntentReason", getString(R.string.intent_reason_sniff_bt_devices));
         alarmIntent.putExtra("PairedDevicesList", arrPairedDevicesList);
-        alarmPendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+        alarmPendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         //alarmMgr.setInexactRepeating();
         alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + interval, alarmPendingIntent);

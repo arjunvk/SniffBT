@@ -157,20 +157,8 @@ public class MainActivity extends AppCompatActivity {
                 intentListenBT = new Intent(getApplicationContext(), ListenBTIntentService.class);
                 Log.i(TAG, "Starting Intent Service...");
 
-                // Add the PairedDevicesList to the Intent
-                saveSettingsToScanPairedDevices();
                 intentListenBT.putExtra("PairedDevicesList", arrPairedDevicesList);
                 getApplicationContext().startService(intentListenBT);
-
-                // Register receiver to receive the BT list
-                //IntentFilter intentFilterReceiveBT = new IntentFilter(getString(R.string.intent_Broadcast));
-                //SniffBTBroadcastReceiver sniffBTBRReceiveBTList = new SniffBTBroadcastReceiver(this);
-                //SniffBTBroadcastReceiver sniffBTBRReceiveBTList = new SniffBTBroadcastReceiver(this);
-                //registerReceiver(sniffBTBRReceiveBTList, intentFilterReceiveBT);
-                //ReceiveBTBroadcastReceiver receiveBT = new ReceiveBTBroadcastReceiver();
-                //registerReceiver(receiveRT, intentFilterReceiveBT);
-
-                //startScheduler();
 
                 blnToReturn = true;
                 break;
@@ -269,24 +257,10 @@ public class MainActivity extends AppCompatActivity {
     public void onCheckBoxClicked(View view) {
         if(intentListenBT != null) {
             getApplicationContext().stopService(intentListenBT);
+            intentListenBT = null;
 
             // Change the scheduler icon to 'not' turned on
         }
-    }
-
-    /**
-     * Method to store the settings to scan for Paireddevices
-     */
-    private void saveSettingsToScanPairedDevices() {
-        if(lvPairedDevicesList != null) {
-            arrPairedDevicesList = null;
-            CustomAdapter ca = (CustomAdapter) lvPairedDevicesList.getAdapter();
-            arrPairedDevicesList = ca.getRowItems();
-        }
-        else {
-            showToast("Paired Device list is not updated correctly");
-        }
-
     }
 
     private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {

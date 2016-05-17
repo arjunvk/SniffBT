@@ -7,12 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
-
 import java.util.ArrayList;
 
 import millennia.sniffbt.customRowWithCB.RowItem;
 
-public class AlarmReceiver extends BroadcastReceiver{
+public class AlarmReceiver extends BroadcastReceiver {
 
     final String TAG = "SniffBT Alarm Receiver";
     BTActions btActions;
