@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
+        // Display the paired devices on startup
+        listPairedBTDevices();
+
         // Set the method for refreshing list of Paired devices
         final SwipeRefreshLayout refreshPairedDevices = (SwipeRefreshLayout)findViewById(R.id.swipePairedBTDevicesRefresh);
         if (refreshPairedDevices != null) {
