@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onRefresh() {
                             if(btActions.isBluetoothTurnedOn()) {
-                                //sniffBTObj.setDisplayDiscoveredListFlag(true);
                                 mProgressDlg.show();
                                 listDiscoveredBTDevices();
                             }
@@ -170,10 +169,6 @@ public class MainActivity extends AppCompatActivity {
         return blnToReturn;
     }
 
-    public RowItem[] getPairedDevicesList() {
-        return arrPairedDevicesList;
-    }
-
     /**
      * Method to display a message on the Toast widget
      * @param message - The {@link String} message to display
@@ -235,10 +230,9 @@ public class MainActivity extends AppCompatActivity {
     private void listDiscoveredBTDevices() {
         IntentFilter filter = new IntentFilter();
 
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
 
         registerReceiver(btBroadcastReceiver, filter);
 
@@ -264,8 +258,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {
-
-        @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);

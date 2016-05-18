@@ -2,25 +2,14 @@ package millennia.sniffbt;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
-import android.content.Context;
-import android.os.ParcelUuid;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.ConnectException;
 import java.util.Set;
-import java.util.UUID;
 
 public class BTActions {
 
     private BluetoothAdapter baBTAdapter;
     final int INT_SHORT_WAIT = 5;
     private CommonFunctions cf;
-    private UUID appUUID = null;
 
     public BTActions(){
         baBTAdapter = null;
