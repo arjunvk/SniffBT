@@ -20,4 +20,6 @@
 
     <string name="intent_reason_alarm_receiver">Alarm Received</string>
     <string name="intent_reason_sniff_bt_devices">Sniff Devices</string>
+
+    <string name="SH_PREF_Paired_Devices">PairedDevices</string>
 </resources>

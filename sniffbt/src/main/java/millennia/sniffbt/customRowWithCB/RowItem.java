@@ -1,26 +1,24 @@
 package millennia.sniffbt.customRowWithCB;
 
+import android.bluetooth.BluetoothDevice;
+
 import java.io.Serializable;
 
 public class RowItem implements Serializable {
-    private String name;
+    private BluetoothDevice device;
     private boolean blnIsCBChecked;
 
-    public RowItem(String name, boolean blnCBChecked) {
-        this.name = name;
+    public RowItem(BluetoothDevice device, boolean blnCBChecked) {
+        this.device = device;
         this.blnIsCBChecked = blnCBChecked;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public void setCB(boolean blnCBChecked) {
         this.blnIsCBChecked = blnCBChecked;
     }
 
-    public String getName() {
-        return this.name;
+    public String getDeviceName() {
+        return this.device.getName();
     }
 
     public boolean isCBChecked() {

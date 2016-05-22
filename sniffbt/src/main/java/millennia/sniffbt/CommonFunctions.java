@@ -5,7 +5,10 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.NotificationCompat;
+
+import com.google.gson.Gson;
 
 public class CommonFunctions {
 
@@ -43,4 +46,31 @@ public class CommonFunctions {
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(0, mBuilder.build());
     }
+
+    /**
+     * Method to store a complex object in the Shared Preferences class
+     * @param  mPref - the {@link SharedPreferences} object
+     * @param strReferenceName - The {@link String} reference name which will be used to retrieve the object
+     * @param obj - The {@link Object}
+     */
+    public void setSharedPreferences(SharedPreferences mPref, String strReferenceName, Object obj) {
+        SharedPreferences.Editor prefEditor = mPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(obj);
+        prefEditor.putString(strReferenceName, json);
+        prefEditor.commit();
+    }
+
+    /**
+     * Method to retireve a saved Shared Preferences object
+     * @param  mPref - the {@link SharedPreferences} object
+     * @param strReferenceName - The {@link String} reference name
+     * @return - The {@link Object}
+     */
+    public Object getSharedPreferences(SharedPreferences mPref, String strReferenceName, Class<?> objClass) {
+        Gson gson = new Gson();
+        String json = mPref.getString(strReferenceName, "");
+        return gson.fromJson(json, objClass);
+    }
+
 }

@@ -91,11 +91,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         if(arrDiscoveredDevicesList != null) {
             for(BluetoothDevice nearbyDevice : arrDiscoveredDevicesList ) {
                 for(RowItem pairedDevice : arrPairedDevicesList) {
-                    if(pairedDevice.getName().equals(nearbyDevice.getName()) && pairedDevice.isCBChecked()){
+                    if(pairedDevice.getDeviceName().equals(nearbyDevice.getName()) && pairedDevice.isCBChecked()){
                         blnPairedDeviceToBeConnected = true;
-                        Log.i(TAG, "Paired device '" + pairedDevice.getName() + "' found");
+                        Log.i(TAG, "Paired device '" + pairedDevice.getDeviceName() + "' found");
                         cf.displayNotification(context, "Device Found",
-                                               pairedDevice.getName(), MainActivity.class);
+                                               pairedDevice.getDeviceName(), MainActivity.class);
                         // Connect the device
                         actionOnBTDevice("CONNECT", nearbyDevice, hs);
                         actionOnBTDevice("CONNECT", nearbyDevice, a2dp);
@@ -195,7 +195,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      */
     private void checkIfDeviceConnectionIsRequired(BluetoothDevice device) {
         for(RowItem pairedDevice : arrPairedDevicesList) {
-            if(pairedDevice.getName().equals(device.getName()) && !pairedDevice.isCBChecked()){
+            if(pairedDevice.getDeviceName().equals(device.getName()) && !pairedDevice.isCBChecked()){
                 //Disconnect the device
                 actionOnBTDevice("DISCONNECT", device, hs);
                 actionOnBTDevice("DISCONNECT", device, a2dp);
@@ -210,7 +210,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     private void checkIfDeviceConnectionIsRequired(List<BluetoothDevice> devices) {
         for(RowItem pairedDevice : arrPairedDevicesList) {
             for(BluetoothDevice device : devices) {
-                if(pairedDevice.getName().equals(device.getName()) && !pairedDevice.isCBChecked()){
+                if(pairedDevice.getDeviceName().equals(device.getName()) && !pairedDevice.isCBChecked()){
                     //Disconnect the device
                     actionOnBTDevice("DISCONNECT", device, hs);
                     actionOnBTDevice("DISCONNECT", device, a2dp);
@@ -268,10 +268,10 @@ public class AlarmReceiver extends BroadcastReceiver {
     };
 
     private class BluetoothProfileServiceListener implements BluetoothProfile.ServiceListener {
-        private final int[] states = { BluetoothProfile.STATE_CONNECTED};
-                                       //BluetoothProfile.STATE_CONNECTING,
-                                       //BluetoothProfile.STATE_DISCONNECTED,
-                                       //BluetoothProfile.STATE_DISCONNECTING};
+        private final int[] states = {  BluetoothProfile.STATE_CONNECTED,
+                                        BluetoothProfile.STATE_CONNECTING};
+                                        //BluetoothProfile.STATE_DISCONNECTED,
+                                        //BluetoothProfile.STATE_DISCONNECTING};
 
         @Override
         public void onServiceConnected(int profile, BluetoothProfile bluetoothProfile) {

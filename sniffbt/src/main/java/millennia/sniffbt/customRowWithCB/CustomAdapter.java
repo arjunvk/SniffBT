@@ -10,24 +10,25 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import millennia.sniffbt.R;
+import millennia.sniffbt.SniffBTInterface;
 
 public class CustomAdapter extends ArrayAdapter<RowItem> {
     RowItem[] rowItems = null;
-    Context context;
+    SniffBTInterface activity;
 
-    public CustomAdapter(Context context, RowItem[] resource) {
-        super(context, R.layout.row_with_cb, resource);
-        this.context = context;
+    public CustomAdapter(SniffBTInterface activity, RowItem[] resource) {
+        super((Context) activity, R.layout.row_with_cb, resource);
         this.rowItems = resource;
+        this.activity = activity;
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+        LayoutInflater inflater = ((Activity)activity).getLayoutInflater();
         convertView = inflater.inflate(R.layout.row_with_cb, parent, false);
         TextView name = (TextView)convertView.findViewById(R.id.row_with_cb_Txt);
         CheckBox cb = (CheckBox)convertView.findViewById(R.id.row_with_cb_ChkBox);
-        name.setText(rowItems[position].getName());
+        name.setText(rowItems[position].getDeviceName());
 
         cb.setChecked(rowItems[position].isCBChecked());
 
@@ -37,6 +38,7 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
             public void onClick(View v) {
                 CheckBox cb = (CheckBox) v;
                 rowItems[position].setCB(cb.isChecked());
+                activity.pairedDeviceListSettingsChanged();
             }
         });
 

@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -26,7 +27,7 @@ import java.util.Set;
 import millennia.sniffbt.customRowWithCB.CustomAdapter;
 import millennia.sniffbt.customRowWithCB.RowItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SniffBTInterface{
 
     // Initialize variables
     final String TAG = "Main Activity";
@@ -37,22 +38,24 @@ public class MainActivity extends AppCompatActivity {
     Intent intentListenBT;
     ListView lvPairedDevicesList;
     private ProgressDialog mProgressDlg;
-    //private SniffBT sniffBTObj;
-    //private AlarmManager alarmMgr;
-    //private PendingIntent alarmPendingIntent;
-    //private Intent alarmIntent;
+    SharedPreferences appPrefs;
+    CustomAdapter pairedDevicesCustomAdapter;
+    CommonFunctions cf;
+
 
     // Initialize constructor
     public MainActivity(){
         btActions = new BTActions();
-        //sniffBTObj = new SniffBT();
-        //btScan = new SniffBTBroadcastReceiver(this);
+        cf = new CommonFunctions();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Define variables
+        appPrefs = getPreferences(MODE_PRIVATE);
 
         // Define the lists on MainActivity
         btDiscListArrayAdapter = new ArrayAdapter<>(this, R.layout.simple_row, R.id.simple_row_Txt);
@@ -73,7 +76,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
 
         // Display the paired devices on startup
-        listPairedBTDevices();
+        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), RowItem[].class) != null) {
+            arrPairedDevicesList = (RowItem[]) cf.getSharedPreferences(appPrefs,
+                                               getString(R.string.SH_PREF_Paired_Devices), RowItem[].class);
+            lvPairedDevicesList = (ListView)findViewById(R.id.lstPairedBTDevices);
+            pairedDevicesCustomAdapter = new CustomAdapter(this, arrPairedDevicesList);
+            lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
+        }
+        else {
+            listPairedBTDevices();
+        }
 
         // Set the method for refreshing list of Paired devices
         final SwipeRefreshLayout refreshPairedDevices = (SwipeRefreshLayout)findViewById(R.id.swipePairedBTDevicesRefresh);
@@ -184,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
      * Method to list the already paired Bluetooth devices
      */
     private void listPairedBTDevices(){
-        CustomAdapter customAdapter;
         boolean blnIsBTOn = false;
 
         // Store the current state of Bluetooth
@@ -208,12 +219,12 @@ public class MainActivity extends AppCompatActivity {
                     // Loop through paired devices
                     for(int iCnt = 0; iCnt < pairedDevices.size(); iCnt++){
                         BluetoothDevice device = (BluetoothDevice)pairedDevices.toArray()[iCnt];
-                        arrPairedDevicesList[iCnt] = new RowItem(device.getName(),false);
+                        arrPairedDevicesList[iCnt] = new RowItem(device, false);
                     }
 
-                    customAdapter = new CustomAdapter(this, arrPairedDevicesList);
+                    pairedDevicesCustomAdapter = new CustomAdapter(this, arrPairedDevicesList);
 
-                    lvPairedDevicesList.setAdapter(customAdapter);
+                    lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
                 }
                 catch(NullPointerException npe){
                     System.out.println("List view is null");
@@ -225,6 +236,16 @@ public class MainActivity extends AppCompatActivity {
         if(!blnIsBTOn) {
             btActions.turnOffBluetooth();
         }
+
+        // Save the Paired devices to Shared Preferences object
+        cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), arrPairedDevicesList);
+    }
+
+    /**
+     * Method to update app settings when Paired devices list is updated by user
+     */
+    public void pairedDeviceListSettingsChanged() {
+        cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), arrPairedDevicesList);
     }
 
     /**
