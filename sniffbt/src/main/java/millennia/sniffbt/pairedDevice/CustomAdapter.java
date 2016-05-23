@@ -1,4 +1,4 @@
-package millennia.sniffbt.customRowWithCB;
+package millennia.sniffbt.pairedDevice;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,11 +12,11 @@ import android.widget.TextView;
 import millennia.sniffbt.R;
 import millennia.sniffbt.SniffBTInterface;
 
-public class CustomAdapter extends ArrayAdapter<RowItem> {
-    RowItem[] rowItems = null;
+public class CustomAdapter extends ArrayAdapter<Row> {
+    Row[] rowItems = null;
     SniffBTInterface activity;
 
-    public CustomAdapter(SniffBTInterface activity, RowItem[] resource) {
+    public CustomAdapter(SniffBTInterface activity, Row[] resource) {
         super((Context) activity, R.layout.row_with_cb, resource);
         this.rowItems = resource;
         this.activity = activity;
@@ -44,7 +44,4 @@ public class CustomAdapter extends ArrayAdapter<RowItem> {
 
         return convertView;
     }
-
-    public RowItem[] getRowItems() {return this.rowItems;}
-
 }

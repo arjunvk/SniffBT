@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 
-import millennia.sniffbt.customRowWithCB.RowItem;
+import millennia.sniffbt.pairedDevice.Row;
 
 public class ListenBTIntentService extends IntentService {
 
@@ -22,7 +22,7 @@ public class ListenBTIntentService extends IntentService {
         AlarmManager alarmMgr;
         PendingIntent alarmPendingIntent;
         Intent alarmIntent;
-        RowItem[] arrPairedDevicesList = (RowItem[])workIntent.getSerializableExtra("PairedDevicesList");
+        Row[] arrPairedDevicesList = (Row[])workIntent.getSerializableExtra("PairedDevicesList");
 
         Log.i(TAG, "Inside Intent Service...");
 

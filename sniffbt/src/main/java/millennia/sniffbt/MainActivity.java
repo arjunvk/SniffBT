@@ -24,15 +24,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Set;
 
-import millennia.sniffbt.customRowWithCB.CustomAdapter;
-import millennia.sniffbt.customRowWithCB.RowItem;
+import millennia.sniffbt.pairedDevice.*;
 
 public class MainActivity extends AppCompatActivity implements SniffBTInterface{
 
     // Initialize variables
     final String TAG = "Main Activity";
     private BTActions btActions;
-    private RowItem[] arrPairedDevicesList;
+    private Row[] arrPairedDevicesList;
     private ArrayList<BluetoothDevice> arrDiscoveredDevicesList;
     ArrayAdapter<String> btDiscListArrayAdapter;
     Intent intentListenBT;
@@ -76,9 +75,9 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface{
         setSupportActionBar(myToolbar);
 
         // Display the paired devices on startup
-        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), RowItem[].class) != null) {
-            arrPairedDevicesList = (RowItem[]) cf.getSharedPreferences(appPrefs,
-                                               getString(R.string.SH_PREF_Paired_Devices), RowItem[].class);
+        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class) != null) {
+            arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs,
+                                               getString(R.string.SH_PREF_Paired_Devices), Row[].class);
             lvPairedDevicesList = (ListView)findViewById(R.id.lstPairedBTDevices);
             pairedDevicesCustomAdapter = new CustomAdapter(this, arrPairedDevicesList);
             lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
@@ -197,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface{
      */
     private void listPairedBTDevices(){
         boolean blnIsBTOn = false;
-        RowItem[] storedPairedDevices = null;
+        Row[] storedPairedDevices = null;
 
         // Store the current state of Bluetooth
         if(btActions.isBluetoothTurnedOn()) {
@@ -206,12 +205,12 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface{
 
         btActions.turnOnBluetooth();
 
-        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), RowItem[].class) != null) {
-            storedPairedDevices = (RowItem[]) cf.getSharedPreferences(appPrefs,
-                                              getString(R.string.SH_PREF_Paired_Devices), RowItem[].class);
+        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class) != null) {
+            storedPairedDevices = (Row[]) cf.getSharedPreferences(appPrefs,
+                                              getString(R.string.SH_PREF_Paired_Devices), Row[].class);
         }
 
-        arrPairedDevicesList = new RowItem[btActions.getPairedDevicesList().size()];
+        arrPairedDevicesList = new Row[btActions.getPairedDevicesList().size()];
 
         lvPairedDevicesList = (ListView)findViewById(R.id.lstPairedBTDevices);
 
@@ -231,22 +230,21 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface{
                             boolean blnIsExistingDevice = false;
                             int iStoredDeviceCnt;
                             for(iStoredDeviceCnt = 0; iStoredDeviceCnt < storedPairedDevices.length; iStoredDeviceCnt++) {
-                                if(device.getAddress().equals(storedPairedDevices[iStoredDeviceCnt].getDevice().getAddress())) {
+                                if(device.getAddress().equals(storedPairedDevices[iStoredDeviceCnt].getDeviceAddress())) {
                                     blnIsExistingDevice = true;
                                     break;
                                 }
                             }
 
                             if(blnIsExistingDevice) {
-                                arrPairedDevicesList[iCnt] = new RowItem(device,
-                                                                 storedPairedDevices[iStoredDeviceCnt].isCBChecked());
+                                arrPairedDevicesList[iCnt] = new Row(device, storedPairedDevices[iStoredDeviceCnt].isCBChecked());
                             }
                             else {
-                                arrPairedDevicesList[iCnt] = new RowItem(device, false);
+                                arrPairedDevicesList[iCnt] = new Row(device, false);
                             }
                         }
                         else {
-                            arrPairedDevicesList[iCnt] = new RowItem(device, false);
+                            arrPairedDevicesList[iCnt] = new Row(device, false);
                         }
                     }
 

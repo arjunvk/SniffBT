@@ -8,11 +8,9 @@ import android.bluetooth.BluetoothProfile;
 import android.bluetooth.IBluetoothA2dp;
 import android.bluetooth.IBluetoothHeadset;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
@@ -21,14 +19,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import millennia.sniffbt.customRowWithCB.RowItem;
+import millennia.sniffbt.pairedDevice.Row;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
     final String TAG = "SniffBT Alarm Receiver";
     BTActions btActions;
     ArrayList<BluetoothDevice> arrDiscoveredDevicesList;
-    RowItem[] arrPairedDevicesList;
+    Row[] arrPairedDevicesList;
     CommonFunctions cf = new CommonFunctions();
     Context context;
 
@@ -45,7 +43,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        arrPairedDevicesList = (RowItem[])intent.getSerializableExtra("PairedDevicesList");
+        arrPairedDevicesList = (Row[])intent.getSerializableExtra("PairedDevicesList");
 
         searchBTDevices();
     }
@@ -90,7 +88,7 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         if(arrDiscoveredDevicesList != null) {
             for(BluetoothDevice nearbyDevice : arrDiscoveredDevicesList ) {
-                for(RowItem pairedDevice : arrPairedDevicesList) {
+                for(Row pairedDevice : arrPairedDevicesList) {
                     if(pairedDevice.getDeviceName().equals(nearbyDevice.getName()) && pairedDevice.isCBChecked()){
                         blnPairedDeviceToBeConnected = true;
                         Log.i(TAG, "Paired device '" + pairedDevice.getDeviceName() + "' found");
@@ -121,24 +119,6 @@ public class AlarmReceiver extends BroadcastReceiver {
         slA2DP = null;
         slHS = null;
     }
-
-    /**
-     * Method to bind service for HeadsetProfile
-     */
-    public ServiceConnection scHeadsetProfile = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            ibth = IBluetoothHeadset.Stub.asInterface(service);
-            Intent intent = new Intent();
-            intent.setAction("HEADSET_INTERFACE_CONNECTED");
-            context.sendBroadcast(intent);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            ibth = null;
-        }
-    };
 
     /**
      * Method to connect a Bluetooth device based on it profile
@@ -194,7 +174,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      * @param device - The {@link BluetoothDevice} device
      */
     private void checkIfDeviceConnectionIsRequired(BluetoothDevice device) {
-        for(RowItem pairedDevice : arrPairedDevicesList) {
+        for(Row pairedDevice : arrPairedDevicesList) {
             if(pairedDevice.getDeviceName().equals(device.getName()) && !pairedDevice.isCBChecked()){
                 //Disconnect the device
                 actionOnBTDevice("DISCONNECT", device, hs);
@@ -208,7 +188,7 @@ public class AlarmReceiver extends BroadcastReceiver {
      * @param devices the {@link List} of connected Bluetooth devices
      */
     private void checkIfDeviceConnectionIsRequired(List<BluetoothDevice> devices) {
-        for(RowItem pairedDevice : arrPairedDevicesList) {
+        for(Row pairedDevice : arrPairedDevicesList) {
             for(BluetoothDevice device : devices) {
                 if(pairedDevice.getDeviceName().equals(device.getName()) && !pairedDevice.isCBChecked()){
                     //Disconnect the device
@@ -225,7 +205,6 @@ public class AlarmReceiver extends BroadcastReceiver {
      */
     private boolean isAnyDeviceCurrentlyConnected() {
         return connectedA2DPDevices.size() != 0 || connectedHSDevices.size() != 0;
-        //return connectedA2DPDevices.size() != 0;
     }
 
     private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {
