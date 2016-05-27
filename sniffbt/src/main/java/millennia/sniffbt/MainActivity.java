@@ -8,16 +8,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -56,6 +66,18 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface{
         // Define variables
         appPrefs = getPreferences(MODE_PRIVATE);
 
+
+        // Set the layout for Paired and Discovered device
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+
+        LinearLayout layoutToolbar = (LinearLayout) findViewById(R.id.my_toolbar);
+        ViewGroup.LayoutParams params = layoutToolbar.getLayoutParams();
+        int intToolbarHeight = params.height;
+        int intToolbarWidth = params.width;
+
+
         // Define the lists on MainActivity
         btDiscListArrayAdapter = new ArrayAdapter<>(this, R.layout.simple_row, R.id.simple_row_Txt);
 
@@ -83,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface{
             lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
         }
         else {
-            listPairedBTDevices();
+            //listPairedBTDevices();
         }
 
         // Set the method for refreshing list of Paired devices
@@ -335,4 +357,49 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface{
             }
         }
     };
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the tabs.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        final int intNumOfTabs = 2;
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return intNumOfTabs;
+        }
+    }
+
+    public static class PairedDeviceFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View view = null;
+            return view;
+        }
+    }
+
+    public static class DiscoveredDeviceFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View view = null;
+            return view;
+        }
+    }
+
+
 }
