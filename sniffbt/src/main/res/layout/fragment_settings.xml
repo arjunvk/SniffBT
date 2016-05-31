@@ -6,13 +6,11 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="millennia.sniffbt.PairedDeviceFragment">
+    tools:context="millennia.sniffbt.SettingsFragment">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/sniffBT"
+    <TextView
+        android:id="@+id/section_label"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|center"
-        android:layout_margin="@dimen/sniff_button" />
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>
