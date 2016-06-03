@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -8,11 +9,21 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="millennia.sniffbt.PairedDeviceFragment">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/sniffBT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|center"
-        android:layout_margin="@dimen/sniff_button" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipePairedBTDevicesRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="4dp">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/lstPairedBTDevices"
+            android:elevation="4dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:background="@color/deviceList" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

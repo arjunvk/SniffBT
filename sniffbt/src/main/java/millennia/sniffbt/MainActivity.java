@@ -1,5 +1,6 @@
 package millennia.sniffbt;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -13,16 +14,22 @@ import android.support.design.widget.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SniffBTInterface {
+import millennia.sniffbt.pairedDevice.Row;
+
+public class MainActivity extends AppCompatActivity{
 
     private Toolbar mToolbar;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
+    SharedPreferences appPrefs;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Define variables
+        appPrefs = getPreferences(MODE_PRIVATE);
 
         //mToolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(mToolbar);
@@ -80,13 +87,6 @@ public class MainActivity extends AppCompatActivity implements SniffBTInterface 
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
         }
-    }
-
-
-
-    @Override
-    public void pairedDeviceListSettingsChanged() {
-
     }
 }
 

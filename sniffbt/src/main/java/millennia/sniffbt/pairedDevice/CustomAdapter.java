@@ -14,17 +14,19 @@ import millennia.sniffbt.SniffBTInterface;
 
 public class CustomAdapter extends ArrayAdapter<Row> {
     Row[] rowItems = null;
-    SniffBTInterface activity;
+    SniffBTInterface pairedDevicesFragment;
+    Context context;
 
-    public CustomAdapter(SniffBTInterface activity, Row[] resource) {
-        super((Context) activity, R.layout.row_with_cb, resource);
+    public CustomAdapter(SniffBTInterface fragmentActivity, Context context, Row[] resource) {
+        super(context, R.layout.row_with_cb, resource);
         this.rowItems = resource;
-        this.activity = activity;
+        this.pairedDevicesFragment = fragmentActivity;
+        this.context = context;
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = ((Activity)activity).getLayoutInflater();
+        LayoutInflater inflater = ((Activity)this.context).getLayoutInflater();
         convertView = inflater.inflate(R.layout.row_with_cb, parent, false);
         TextView name = (TextView)convertView.findViewById(R.id.row_with_cb_Txt);
         CheckBox cb = (CheckBox)convertView.findViewById(R.id.row_with_cb_ChkBox);
@@ -38,7 +40,7 @@ public class CustomAdapter extends ArrayAdapter<Row> {
             public void onClick(View v) {
                 CheckBox cb = (CheckBox) v;
                 rowItems[position].setCB(cb.isChecked());
-                activity.pairedDeviceListSettingsChanged();
+                pairedDevicesFragment.pairedDeviceListSettingsChanged();
             }
         });
 
