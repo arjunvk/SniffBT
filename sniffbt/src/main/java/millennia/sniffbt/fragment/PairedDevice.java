@@ -1,4 +1,4 @@
-package millennia.sniffbt;
+package millennia.sniffbt.fragment;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -13,18 +13,22 @@ import android.widget.ListView;
 
 import java.util.Set;
 
+import millennia.sniffbt.BTActions;
+import millennia.sniffbt.CommonFunctions;
+import millennia.sniffbt.R;
+import millennia.sniffbt.SniffBTInterface;
 import millennia.sniffbt.pairedDevice.*;
 
-public class PairedDeviceFragment extends Fragment implements SniffBTInterface{
+public class PairedDevice extends Fragment implements SniffBTInterface {
 
-    Row[] arrPairedDevicesList;
-    BTActions btActions;
-    CommonFunctions cf;
-    SharedPreferences appPrefs;
-    ListView lvPairedDevicesList;
-    CustomAdapter pairedDevicesCustomAdapter;
+    private Row[] arrPairedDevicesList;
+    private BTActions btActions;
+    private CommonFunctions cf;
+    private SharedPreferences appPrefs;
+    private ListView lvPairedDevicesList;
+    private CustomArrayAdapter pairedDevicesCustomAdapter;
 
-    public PairedDeviceFragment() {
+    public PairedDevice() {
         btActions = new BTActions();
         cf = new CommonFunctions();
     }
@@ -38,6 +42,7 @@ public class PairedDeviceFragment extends Fragment implements SniffBTInterface{
         appPrefs = this.getActivity().getPreferences(Context.MODE_PRIVATE);
     }
 
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
@@ -45,6 +50,7 @@ public class PairedDeviceFragment extends Fragment implements SniffBTInterface{
         return inflater.inflate(R.layout.fragment_paired_device, container, false);
     }
 
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
@@ -53,7 +59,7 @@ public class PairedDeviceFragment extends Fragment implements SniffBTInterface{
             arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs,
                                            getString(R.string.SH_PREF_Paired_Devices), Row[].class);
             lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
-            pairedDevicesCustomAdapter = new CustomAdapter(this, this.getContext(), arrPairedDevicesList);
+            pairedDevicesCustomAdapter = new CustomArrayAdapter(this, this.getContext(), arrPairedDevicesList);
             lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
         }
         else {
@@ -89,11 +95,6 @@ public class PairedDeviceFragment extends Fragment implements SniffBTInterface{
 
         btActions.turnOnBluetooth();
 
-        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class) != null) {
-            storedPairedDevices = (Row[]) cf.getSharedPreferences(appPrefs,
-                    getString(R.string.SH_PREF_Paired_Devices), Row[].class);
-        }
-
         arrPairedDevicesList = new Row[btActions.getPairedDevicesList().size()];
 
         lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
@@ -102,7 +103,7 @@ public class PairedDeviceFragment extends Fragment implements SniffBTInterface{
         Set<BluetoothDevice> pairedDevices = btActions.getPairedDevicesList();
 
         if(!(pairedDevices == null)){
-            if(pairedDevices.size() > 0){
+            //if(pairedDevices.size() > 0){
                 // Populate the ListView with the paired devices
                 try{
                     // Loop through paired devices
@@ -132,14 +133,14 @@ public class PairedDeviceFragment extends Fragment implements SniffBTInterface{
                         }
                     }
 
-                    pairedDevicesCustomAdapter = new CustomAdapter(this, this.getContext(), arrPairedDevicesList);
+                    pairedDevicesCustomAdapter = new CustomArrayAdapter(this, this.getContext(), arrPairedDevicesList);
 
                     lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
                 }
                 catch(NullPointerException npe){
                     System.out.println("List view is null");
                 }
-            }
+            //}
         }
 
         // Leave Bluetooth in the same state as it was before entering this function

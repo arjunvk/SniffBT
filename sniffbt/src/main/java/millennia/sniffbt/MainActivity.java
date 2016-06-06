@@ -14,7 +14,7 @@ import android.support.design.widget.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import millennia.sniffbt.pairedDevice.Row;
+import millennia.sniffbt.fragment.*;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -46,6 +46,16 @@ public class MainActivity extends AppCompatActivity{
         FloatingActionButton mSniffBT = (FloatingActionButton) findViewById(R.id.sniffBT);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
     private void setupTabIcons() {
         mTabLayout.getTabAt(0).setIcon(R.drawable.ic_action_pair);
         mTabLayout.getTabAt(1).setIcon(R.drawable.ic_action_search);
@@ -54,9 +64,9 @@ public class MainActivity extends AppCompatActivity{
 
     private void setupViewPager(ViewPager mViewPager) {
         ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        mViewPagerAdapter.addFragment(new PairedDeviceFragment(), "");
-        mViewPagerAdapter.addFragment(new DiscoveredDeviceFragment(), "");
-        mViewPagerAdapter.addFragment(new SettingsFragment(), "");
+        mViewPagerAdapter.addFragment(new PairedDevice(), "");
+        mViewPagerAdapter.addFragment(new DiscoveredDevice(), "");
+        mViewPagerAdapter.addFragment(new Settings(), "");
         mViewPager.setAdapter(mViewPagerAdapter);
     }
 

@@ -6,11 +6,79 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="millennia.sniffbt.DiscoveredDeviceFragment">
+    tools:context="millennia.sniffbt.fragment.DiscoveredDevice">
 
-    <TextView
-        android:id="@+id/section_label"
+    <ProgressBar
+        android:id="@+id/pbDiscoveredDevices"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true" />
+
+    <ListView
+        android:id="@+id/lstDiscoveredBTDevices"
+        android:layout_alignParentTop="true"
+        android:layout_height="300dp"
+        android:layout_width="fill_parent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="@dimen/list_view_divider_height"
+        android:choiceMode="singleChoice"
+        android:listSelector="@color/list_item_selected" >
+    </ListView>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/pairBT"
+        android:background="@drawable/ic_action_down"
+        android:layout_marginStart="134dp"
+        android:layout_below="@+id/lstDiscoveredBTDevices"
+        android:layout_alignParentStart="true"/>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/unpairBT"
+        android:background="@drawable/ic_action_up"
+        android:layout_below="@+id/lstDiscoveredBTDevices"
+        android:layout_toEndOf="@+id/pairBT"
+        android:layout_marginStart="73dp" />
+
+    <ListView
+        android:id="@+id/lstPairedBTDevices"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_below="@+id/pairBT"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="@dimen/list_view_divider_height"
+        android:choiceMode="singleChoice"
+        android:listSelector="@color/list_item_selected" >
+    </ListView>
 
 </RelativeLayout>
+
+<!--
+<LinearLayout
+        android:id="@+id/ListView_layout"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:weightSum="2"
+        android:orientation="vertical"
+        android:layout_width="fill_parent">
+
+        <ListView
+            android:id="@+id/lv1"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="fill_parent">
+        </ListView>
+
+        <ListView
+            android:id="@+id/lv2"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="fill_parent">
+        </ListView>
+
+    </LinearLayout>
+-->

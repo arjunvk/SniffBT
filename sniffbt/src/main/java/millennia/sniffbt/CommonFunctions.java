@@ -6,7 +6,9 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.NotificationCompat;
+import android.view.View;
 
 import com.google.gson.Gson;
 
@@ -71,6 +73,15 @@ public class CommonFunctions {
         Gson gson = new Gson();
         String json = mPref.getString(strReferenceName, "");
         return gson.fromJson(json, objClass);
+    }
+
+    /**
+     * Method to display a SnackBar message
+     * @param strMsg - The {@link String} message to be displayed
+     */
+    public void showSnackBar(View view, String strMsg, int intTime) {
+        Snackbar snackbar = Snackbar.make(view, strMsg, intTime);
+        snackbar.show();
     }
 
 }

@@ -12,12 +12,12 @@ import android.widget.TextView;
 import millennia.sniffbt.R;
 import millennia.sniffbt.SniffBTInterface;
 
-public class CustomAdapter extends ArrayAdapter<Row> {
+public class CustomArrayAdapter extends ArrayAdapter<Row> {
     Row[] rowItems = null;
     SniffBTInterface pairedDevicesFragment;
     Context context;
 
-    public CustomAdapter(SniffBTInterface fragmentActivity, Context context, Row[] resource) {
+    public CustomArrayAdapter(SniffBTInterface fragmentActivity, Context context, Row[] resource) {
         super(context, R.layout.row_with_cb, resource);
         this.rowItems = resource;
         this.pairedDevicesFragment = fragmentActivity;

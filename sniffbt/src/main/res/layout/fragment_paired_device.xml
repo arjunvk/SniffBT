@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="millennia.sniffbt.PairedDeviceFragment">
+    tools:context="millennia.sniffbt.fragment.PairedDevice">
 
     <android.support.v4.widget.SwipeRefreshLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -21,8 +21,9 @@
             android:layout_height="match_parent"
             android:id="@+id/lstPairedBTDevices"
             android:elevation="4dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:background="@color/deviceList" />
+            android:divider="@android:color/transparent"
+            android:dividerHeight="@dimen/list_view_divider_height"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
