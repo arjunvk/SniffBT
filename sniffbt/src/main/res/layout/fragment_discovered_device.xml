@@ -8,23 +8,33 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="millennia.sniffbt.fragment.DiscoveredDevice">
 
-    <ProgressBar
-        android:id="@+id/pbDiscoveredDevices"
-        style="?android:attr/progressBarStyleHorizontal"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/tvAvailableDevices"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:text="@string/text_list_available_devices" />
+
+    <ProgressBar
+        android:id="@+id/pbDiscoveredDevices"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tvAvailableDevices"
+        android:layout_marginStart="16dp"/>
 
     <ListView
         android:id="@+id/lstDiscoveredBTDevices"
-        android:layout_alignParentTop="true"
         android:layout_height="300dp"
         android:layout_width="fill_parent"
         android:divider="@android:color/transparent"
         android:dividerHeight="@dimen/list_view_divider_height"
         android:choiceMode="singleChoice"
-        android:listSelector="@color/list_item_selected" >
-    </ListView>
+        android:listSelector="@color/list_item_selected"
+        android:layout_below="@+id/tvAvailableDevices"
+        android:layout_above="@+id/tvSuggestBTOn"
+        android:layout_marginTop="@dimen/list_view_margin_top" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -33,7 +43,7 @@
         android:background="@drawable/ic_action_down"
         android:layout_marginStart="134dp"
         android:layout_below="@+id/lstDiscoveredBTDevices"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -44,16 +54,34 @@
         android:layout_toEndOf="@+id/pairBT"
         android:layout_marginStart="73dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvPairedDevices"
+        android:text="@string/text_list_paired_devices"
+        android:layout_below="@+id/pairBT"
+        android:layout_alignParentStart="true" />
+
     <ListView
         android:id="@+id/lstPairedBTDevices"
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-        android:layout_below="@+id/pairBT"
         android:divider="@android:color/transparent"
         android:dividerHeight="@dimen/list_view_divider_height"
         android:choiceMode="singleChoice"
-        android:listSelector="@color/list_item_selected" >
-    </ListView>
+        android:listSelector="@color/list_item_selected"
+        android:layout_below="@+id/tvPairedDevices"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="@dimen/list_view_margin_top" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/suggest_BT_On"
+        android:id="@+id/tvSuggestBTOn"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
 

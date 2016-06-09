@@ -24,11 +24,22 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btOnOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="@dimen/floating_button"
+        android:layout_marginRight="@dimen/floating_button"
+        android:scaleType="center" />
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/sniffBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_margin="@dimen/sniff_button" />
+        android:layout_marginBottom="@dimen/floating_button"
+        android:layout_marginRight="@dimen/floating_button"
+        android:layout_alignEnd="@+id/swipePairedBTDevicesRefresh" />
 
 </android.support.design.widget.CoordinatorLayout>
 
