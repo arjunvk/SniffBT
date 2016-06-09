@@ -32,6 +32,7 @@ public class CommonFunctions {
      * @param text - The {@link String} text for the notification
      */
     public void displayNotification(Context context, String title, String text, Class<?> cls) {
+        /*
         NotificationCompat.Builder mBuilder =
                 (NotificationCompat.Builder) new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_action_bt_on)
@@ -47,6 +48,7 @@ public class CommonFunctions {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(0, mBuilder.build());
+        */
     }
 
     /**

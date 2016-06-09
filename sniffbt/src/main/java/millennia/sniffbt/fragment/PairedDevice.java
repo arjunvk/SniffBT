@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +18,11 @@ import millennia.sniffbt.BTActions;
 import millennia.sniffbt.CommonFunctions;
 import millennia.sniffbt.R;
 import millennia.sniffbt.SniffBTInterface;
-import millennia.sniffbt.pairedDevice.*;
+import millennia.sniffbt.pairedDevice.CustomArrayAdapter;
+import millennia.sniffbt.pairedDevice.Row;
 
 public class PairedDevice extends Fragment implements SniffBTInterface {
-
+    final String TAG = "PairedDevice Fragment";
     private Row[] arrPairedDevicesList;
     private BTActions btActions;
     private CommonFunctions cf;
@@ -35,7 +37,7 @@ public class PairedDevice extends Fragment implements SniffBTInterface {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
+        Log.i(TAG, "Begin render of Paired Device fragment...");
         super.onCreate(savedInstanceState);
 
         // Define variables
@@ -55,6 +57,7 @@ public class PairedDevice extends Fragment implements SniffBTInterface {
         super.onActivityCreated(savedInstanceState);
 
         // Display the paired devices on startup
+        Log.i(TAG, "Listing Paired devices...");
         if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class) != null) {
             arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs,
                                            getString(R.string.SH_PREF_Paired_Devices), Row[].class);
@@ -73,6 +76,7 @@ public class PairedDevice extends Fragment implements SniffBTInterface {
                     new SwipeRefreshLayout.OnRefreshListener() {
                         @Override
                         public void onRefresh() {
+                            Log.i(TAG, "Refreshing Paired devices...");
                             listPairedBTDevices();
                             refreshPairedDevices.setRefreshing(false);
                         }
@@ -95,6 +99,11 @@ public class PairedDevice extends Fragment implements SniffBTInterface {
 
         btActions.turnOnBluetooth();
 
+        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class) != null) {
+            storedPairedDevices = (Row[]) cf.getSharedPreferences(appPrefs,
+                                          getString(R.string.SH_PREF_Paired_Devices), Row[].class);
+        }
+
         arrPairedDevicesList = new Row[btActions.getPairedDevicesList().size()];
 
         lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
@@ -103,44 +112,42 @@ public class PairedDevice extends Fragment implements SniffBTInterface {
         Set<BluetoothDevice> pairedDevices = btActions.getPairedDevicesList();
 
         if(!(pairedDevices == null)){
-            //if(pairedDevices.size() > 0){
-                // Populate the ListView with the paired devices
-                try{
-                    // Loop through paired devices
-                    for(int iCnt = 0; iCnt < pairedDevices.size(); iCnt++){
-                        BluetoothDevice device = (BluetoothDevice)pairedDevices.toArray()[iCnt];
+            // Populate the ListView with the paired devices
+            try{
+                // Loop through paired devices
+                for(int iCnt = 0; iCnt < pairedDevices.size(); iCnt++){
+                    BluetoothDevice device = (BluetoothDevice)pairedDevices.toArray()[iCnt];
 
-                        // Check for existing Paired devices setting
-                        if (storedPairedDevices != null) {
-                            boolean blnIsExistingDevice = false;
-                            int iStoredDeviceCnt;
-                            for(iStoredDeviceCnt = 0; iStoredDeviceCnt < storedPairedDevices.length; iStoredDeviceCnt++) {
-                                if(device.getAddress().equals(storedPairedDevices[iStoredDeviceCnt].getDeviceAddress())) {
-                                    blnIsExistingDevice = true;
-                                    break;
-                                }
+                    // Check for existing Paired devices setting
+                    if (storedPairedDevices != null) {
+                        boolean blnIsExistingDevice = false;
+                        int iStoredDeviceCnt;
+                        for(iStoredDeviceCnt = 0; iStoredDeviceCnt < storedPairedDevices.length; iStoredDeviceCnt++) {
+                            if(device.getAddress().equals(storedPairedDevices[iStoredDeviceCnt].getDeviceAddress())) {
+                                blnIsExistingDevice = true;
+                                break;
                             }
+                        }
 
-                            if(blnIsExistingDevice) {
-                                arrPairedDevicesList[iCnt] = new Row(device, storedPairedDevices[iStoredDeviceCnt].isCBChecked());
-                            }
-                            else {
-                                arrPairedDevicesList[iCnt] = new Row(device, false);
-                            }
+                        if(blnIsExistingDevice) {
+                            arrPairedDevicesList[iCnt] = new Row(device, storedPairedDevices[iStoredDeviceCnt].isCBChecked());
                         }
                         else {
                             arrPairedDevicesList[iCnt] = new Row(device, false);
                         }
                     }
-
-                    pairedDevicesCustomAdapter = new CustomArrayAdapter(this, this.getContext(), arrPairedDevicesList);
-
-                    lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
+                    else {
+                        arrPairedDevicesList[iCnt] = new Row(device, false);
+                    }
                 }
-                catch(NullPointerException npe){
-                    System.out.println("List view is null");
-                }
-            //}
+
+                pairedDevicesCustomAdapter = new CustomArrayAdapter(this, this.getContext(), arrPairedDevicesList);
+
+                lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
+            }
+            catch(NullPointerException npe){
+                System.out.println("List view is null");
+            }
         }
 
         // Leave Bluetooth in the same state as it was before entering this function
@@ -149,11 +156,13 @@ public class PairedDevice extends Fragment implements SniffBTInterface {
         }
 
         // Save the Paired devices to Shared Preferences object
+        Log.i(TAG, "Saving Paired device settings");
         cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), arrPairedDevicesList);
     }
 
     @Override
     public void pairedDeviceListSettingsChanged() {
+        Log.i(TAG, "Paired device settings have been changed");
         cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), arrPairedDevicesList);
     }
 }
