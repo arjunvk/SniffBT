@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity{
         final FloatingActionButton mBTOnOrOff = (FloatingActionButton) findViewById(R.id.btOnOff);
 
         Log.i(TAG, "Setting up 3 fragments on Main Activity...");
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        final ViewPager mViewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(mViewPager);
         
         Log.i(TAG, "Setting up tabs on Main Activity...");
@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity{
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
                 setupTabIcons(tab.getPosition());
                 switch (tab.getPosition()) {
                     case PAIRED_DEVICE_POSITION:

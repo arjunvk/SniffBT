@@ -1,6 +1,5 @@
 package millennia.sniffbt.fragment;
 
-import android.animation.ObjectAnimator;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -9,19 +8,21 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -52,8 +53,8 @@ public class DiscoveredDevice extends Fragment{
     private ImageButton ibtnPair;
     private ImageButton ibtnUnPair;
     private ProgressBar pbDiscDevicesSpinner;
-    private ObjectAnimator pbAnimation;
     private TextView tvSuggestBTOn;
+    private ProgressBar pbLoading;
 
     public DiscoveredDevice() {
         btActions = new BTActions();
@@ -85,18 +86,7 @@ public class DiscoveredDevice extends Fragment{
         btPairedListArrayAdapter = new ArrayAdapter<>(getContext(), R.layout.simple_row, R.id.simple_row_Txt);
 
         // Define UI Objects
-        tvAvailableDevices = (TextView) getView().findViewById(R.id.tvAvailableDevices);
-        tvPairedDevices = (TextView) getView().findViewById(R.id.tvPairedDevices);
-        lvDiscoveredList = (ListView) getView().findViewById(R.id.lstDiscoveredBTDevices);
-        lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
-        ibtnPair = (ImageButton) getView().findViewById(R.id.pairBT);
-        ibtnUnPair = (ImageButton) getView().findViewById(R.id.unpairBT);
-        tvSuggestBTOn = (TextView) getView().findViewById(R.id.tvSuggestBTOn);
-
-        pbDiscDevicesSpinner = (ProgressBar) getView().findViewById(R.id.pbDiscoveredDevices);
-        pbAnimation = ObjectAnimator.ofInt (pbDiscDevicesSpinner, "progress", 0, 500); // see this max value coming back here, we animale towards that value
-        pbAnimation.setDuration (5000); //in milliseconds
-        pbAnimation.setInterpolator (new DecelerateInterpolator());
+        defineUIObjects();
 
         // Set the listeners
         Log.i(TAG, "Setting the listeners");
@@ -167,6 +157,20 @@ public class DiscoveredDevice extends Fragment{
         refreshFragment(isVisibleToUser);
     }
 
+    private void defineUIObjects() {
+        tvAvailableDevices = (TextView) getView().findViewById(R.id.tvAvailableDevices);
+        tvPairedDevices = (TextView) getView().findViewById(R.id.tvPairedDevices);
+        lvDiscoveredList = (ListView) getView().findViewById(R.id.lstDiscoveredBTDevices);
+        lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
+        ibtnPair = (ImageButton) getView().findViewById(R.id.pairBT);
+        ibtnUnPair = (ImageButton) getView().findViewById(R.id.unpairBT);
+        tvSuggestBTOn = (TextView) getView().findViewById(R.id.tvSuggestBTOn);
+        pbDiscDevicesSpinner = (ProgressBar) getView().findViewById(R.id.pbDiscoveredDevices);
+
+        pbLoading = (ProgressBar) getView().findViewById(R.id.spin_kit_progress);
+        pbLoading.setIndeterminateDrawable(new DoubleBounce());
+    }
+
     public void refreshFragment(boolean isVisibleToUser) {
         if(isVisibleToUser) {
             // Refresh the Discoverable devices if Bluetooth is on
@@ -175,6 +179,7 @@ public class DiscoveredDevice extends Fragment{
 
                 hideUnhideLists(View.VISIBLE);
                 tvSuggestBTOn.setVisibility(View.GONE);
+                pbLoading.setVisibility(View.GONE); // CAN BE REMOVED AFTER UPDATING XML
 
                 // Clear both the lists
                 Log.i(TAG, "Clearing both lists");
@@ -193,6 +198,7 @@ public class DiscoveredDevice extends Fragment{
 
                 hideUnhideLists(View.GONE);
                 tvSuggestBTOn.setVisibility(View.VISIBLE);
+                pbLoading.setVisibility(View.GONE); // CAN BE REMOVED AFTER UPDATING XML
             }
         }
         else {
@@ -235,36 +241,93 @@ public class DiscoveredDevice extends Fragment{
         Log.i(TAG, "Starting Bluetooth discovery...");
         btActions.startDiscovery();
         pbDiscDevicesSpinner.setVisibility(View.VISIBLE);
-        pbAnimation.start();
     }
 
     /**
      * Method to display the list of paired BT devices. This function assumes BT is on.
      */
     private void listPairedBTDevices() {
-        arrPairedDevicesList = btActions.getPairedDevicesList();
-        btPairedListArrayAdapter.clear();
-        for(BluetoothDevice device : arrPairedDevicesList) {
-            btPairedListArrayAdapter.add(device.getName());
+        if(btActions.isBluetoothTurnedOn()) {
+            updatePairedDevicesList();
+            btPairedListArrayAdapter.clear();
+            for(BluetoothDevice device : arrPairedDevicesList) {
+                btPairedListArrayAdapter.add(device.getName());
+            }
+
+            lvPairedDevicesList.setAdapter(btPairedListArrayAdapter);
+        }
+    }
+
+    /**
+     * Method to update arrPairedDevices
+     */
+    private void updatePairedDevicesList() {
+        boolean blnIsBtOn = true;
+        if(!btActions.isBluetoothTurnedOn()) {
+            blnIsBtOn = false;
+            btActions.turnOnBluetooth();
         }
 
-        lvPairedDevicesList.setAdapter(btPairedListArrayAdapter);
+        arrPairedDevicesList = btActions.getPairedDevicesList();
+
+        if(!blnIsBtOn) {
+            btActions.turnOffBluetooth();
+        }
     }
 
     /**
      * Method to pair a Bluetooth device
      * @param device - The {@link BluetoothDevice}
      */
-    private void pairDevice(BluetoothDevice device) {
+    private void pairDevice(final BluetoothDevice device) {
+        final Handler hPBHandler = new Handler();
+        final int intPairWaitTime = 45;
+
         try {
             Method method = device.getClass().getMethod("createBond", (Class[]) null);
             method.invoke(device, (Object[]) null);
 
-            cf.showSnackBar(getView(), "'" + device.getName() + "' has been paired.", Snackbar.LENGTH_SHORT);
+            // Run a separate thread to display/hide the Progress bar
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int intWaitLoad = 0;
+                    boolean blnIsDevicePairedSuccessfully;
 
-            // Wait for a few seconds before making the following call
+                    hPBHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            pbLoading.setVisibility(View.VISIBLE);
+                        }
+                    });
 
-            listPairedBTDevices();
+                    do {
+                        updatePairedDevicesList();
+                        cf.sleepForNSeconds(1);
+                        intWaitLoad++;
+                        blnIsDevicePairedSuccessfully = isDevicePresentInPairedDevicesList(device);
+                    }
+                    while(!blnIsDevicePairedSuccessfully && intWaitLoad < intPairWaitTime);
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            pbLoading.setVisibility(View.GONE);
+                            listPairedBTDevices();
+                            strDiscoveredListItemSelected = "";
+                            listDiscoveredBTDevices();
+                        }
+                    });
+
+                    if(blnIsDevicePairedSuccessfully && intWaitLoad < intPairWaitTime) {
+                        cf.showSnackBar(getView(), "'" + device.getName() + "' has been paired.", Snackbar.LENGTH_SHORT);
+                    }
+                    else {
+                        cf.showSnackBar(getView(), "'" + device.getName() + "' did not pair.", Snackbar.LENGTH_SHORT);
+                    }
+                }
+            }).start();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -274,16 +337,54 @@ public class DiscoveredDevice extends Fragment{
      * Method to unpair a Bluetooth device
      * @param device - The {@link BluetoothDevice}
      */
-    private void unpairDevice(BluetoothDevice device) {
+    private void unpairDevice(final BluetoothDevice device) {
+        final Handler hPBHandler = new Handler();
+        final int intUnpairWaitTime = 15;
+
         try {
             Method method = device.getClass().getMethod("removeBond", (Class[]) null);
             method.invoke(device, (Object[]) null);
 
-            cf.showSnackBar(getView(), "'" + device.getName() + "' has been unpaired.", Snackbar.LENGTH_SHORT);
+            // Run a separate thread to display/hide the Progress bar
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    int intWaitLoad = 0;
+                    boolean blnIsDeviceUnpairedSuccessfully;
 
-            // Wait for a few seconds before making the following call
+                    hPBHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            pbLoading.setVisibility(View.VISIBLE);
+                        }
+                    });
 
-            listPairedBTDevices();
+                    do {
+                        updatePairedDevicesList();
+                        cf.sleepForNSeconds(1);
+                        intWaitLoad++;
+                        blnIsDeviceUnpairedSuccessfully = !isDevicePresentInPairedDevicesList(device);
+                    }
+                    while(!blnIsDeviceUnpairedSuccessfully && intWaitLoad < intUnpairWaitTime);
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            pbLoading.setVisibility(View.GONE);
+                            listPairedBTDevices();
+                            strDiscoveredListItemSelected = "";
+                            listDiscoveredBTDevices();
+                        }
+                    });
+
+                    if(blnIsDeviceUnpairedSuccessfully && intWaitLoad < intUnpairWaitTime) {
+                        cf.showSnackBar(getView(), "'" + device.getName() + "' has been unpaired.", Snackbar.LENGTH_SHORT);
+                    }
+                    else {
+                        cf.showSnackBar(getView(), "'" + device.getName() + "' did not unpair.", Snackbar.LENGTH_SHORT);
+                    }
+                }
+            }).start();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -297,7 +398,7 @@ public class DiscoveredDevice extends Fragment{
         if (arrDiscoveredDevicesList != null) {
             for (BluetoothDevice nearbyDevice : arrDiscoveredDevicesList) {
                 for (BluetoothDevice pairedDevice : arrPairedDevicesList) {
-                    if (pairedDevice == nearbyDevice) {
+                    if (pairedDevice.getAddress().equals(nearbyDevice.getAddress())) {
                         arrDiscoveredDevicesList.remove(nearbyDevice);
                     }
                 }
@@ -323,6 +424,18 @@ public class DiscoveredDevice extends Fragment{
         tvPairedDevices.setVisibility(intAction);
     }
 
+    private boolean isDevicePresentInPairedDevicesList(BluetoothDevice device) {
+        boolean blnIsDevicePresent = false;
+        for(BluetoothDevice eachDevice : arrPairedDevicesList) {
+            if(eachDevice.getAddress().equals(device.getAddress())) {
+                blnIsDevicePresent = true;
+                break;
+            }
+        }
+
+        return blnIsDevicePresent;
+    }
+
     private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -337,7 +450,6 @@ public class DiscoveredDevice extends Fragment{
                     Log.i(TAG, "Bluetooth device found - '" + device.getName() + "'");
                     arrDiscoveredDevicesList.add(device);
                     displayDiscoveredDevices();
-                    //btDiscListArrayAdapter.notifyDataSetChanged();
                 }
             }
             else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {

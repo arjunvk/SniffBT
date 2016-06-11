@@ -1,4 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,27 +16,30 @@
         android:id="@+id/tvAvailableDevices"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:text="@string/text_list_available_devices" />
+        android:text="@string/text_list_discovered_devices"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/pbDiscoveredDevices"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/tvAvailableDevices"
-        android:layout_marginStart="16dp"/>
+        android:layout_toEndOf="@+id/tvAvailableDevices"
+        android:layout_marginStart="16dp"
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/lstDiscoveredBTDevices"
-        android:layout_height="300dp"
-        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:layout_width="wrap_content"
         android:divider="@android:color/transparent"
         android:dividerHeight="@dimen/list_view_divider_height"
         android:choiceMode="singleChoice"
         android:listSelector="@color/list_item_selected"
         android:layout_below="@+id/tvAvailableDevices"
+        android:layout_marginTop="@dimen/list_view_margin_top"
         android:layout_above="@+id/tvSuggestBTOn"
-        android:layout_marginTop="@dimen/list_view_margin_top" />
+        android:visibility="gone" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -43,7 +48,8 @@
         android:background="@drawable/ic_action_down"
         android:layout_marginStart="134dp"
         android:layout_below="@+id/lstDiscoveredBTDevices"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:visibility="gone" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -52,7 +58,19 @@
         android:background="@drawable/ic_action_up"
         android:layout_below="@+id/lstDiscoveredBTDevices"
         android:layout_toEndOf="@+id/pairBT"
-        android:layout_marginStart="73dp" />
+        android:layout_marginStart="73dp"
+        android:visibility="gone" />
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        android:id="@+id/spin_kit_progress"
+        style="@style/SpinKitView.Large.DoubleBounce"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:SpinKit_Color="@color/colorAccent"
+        android:layout_alignBottom="@+id/unpairBT"
+        android:layout_toEndOf="@+id/pairBT"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -60,7 +78,8 @@
         android:id="@+id/tvPairedDevices"
         android:text="@string/text_list_paired_devices"
         android:layout_below="@+id/pairBT"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/lstPairedBTDevices"
@@ -72,7 +91,8 @@
         android:listSelector="@color/list_item_selected"
         android:layout_below="@+id/tvPairedDevices"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/list_view_margin_top" />
+        android:layout_marginTop="@dimen/list_view_margin_top"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -81,32 +101,7 @@
         android:text="@string/suggest_BT_On"
         android:id="@+id/tvSuggestBTOn"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
 
 </RelativeLayout>
-
-<!--
-<LinearLayout
-        android:id="@+id/ListView_layout"
-        android:layout_height="wrap_content"
-        android:baselineAligned="false"
-        android:weightSum="2"
-        android:orientation="vertical"
-        android:layout_width="fill_parent">
-
-        <ListView
-            android:id="@+id/lv1"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_width="fill_parent">
-        </ListView>
-
-        <ListView
-            android:id="@+id/lv2"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_width="fill_parent">
-        </ListView>
-
-    </LinearLayout>
--->
