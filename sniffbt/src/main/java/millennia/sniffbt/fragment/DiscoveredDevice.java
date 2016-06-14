@@ -1,6 +1,7 @@
 package millennia.sniffbt.fragment;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -436,6 +437,23 @@ public class DiscoveredDevice extends Fragment{
         return blnIsDevicePresent;
     }
 
+    private String getBTMajorDeviceClass(int major){
+        switch(major){
+            case BluetoothClass.Device.Major.AUDIO_VIDEO    :   return "AUDIO_VIDEO";
+            case BluetoothClass.Device.Major.COMPUTER       : 	return "COMPUTER";
+            case BluetoothClass.Device.Major.HEALTH         :	return "HEALTH";
+            case BluetoothClass.Device.Major.IMAGING        :   return "IMAGING";
+            case BluetoothClass.Device.Major.MISC           :	return "MISC";
+            case BluetoothClass.Device.Major.NETWORKING     :   return "NETWORKING";
+            case BluetoothClass.Device.Major.PERIPHERAL     :   return "PERIPHERAL";
+            case BluetoothClass.Device.Major.PHONE          :   return "PHONE";
+            case BluetoothClass.Device.Major.TOY            :   return "TOY";
+            case BluetoothClass.Device.Major.UNCATEGORIZED  :	return "UNCATEGORIZED";
+            case BluetoothClass.Device.Major.WEARABLE       :   return "WEARABLE";
+            default                                         :   return "unknown";
+        }
+    }
+
     private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -448,6 +466,8 @@ public class DiscoveredDevice extends Fragment{
             else if(BluetoothDevice.ACTION_FOUND.equals(action)) {
                 if(device.getName() != null) {
                     Log.i(TAG, "Bluetooth device found - '" + device.getName() + "'");
+                    Log.i(TAG, "Device '" + device.getName() + "' is of type '" +
+                               getBTMajorDeviceClass(device.getBluetoothClass().getMajorDeviceClass()) + "'");
                     arrDiscoveredDevicesList.add(device);
                     displayDiscoveredDevices();
                 }
