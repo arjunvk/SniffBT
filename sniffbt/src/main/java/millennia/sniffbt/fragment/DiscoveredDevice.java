@@ -8,19 +8,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.ybq.android.spinkit.style.DoubleBounce;
@@ -28,6 +35,7 @@ import com.github.ybq.android.spinkit.style.DoubleBounce;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import millennia.sniffbt.BTActions;
 import millennia.sniffbt.CommonFunctions;
@@ -47,7 +55,7 @@ public class DiscoveredDevice extends Fragment{
     private boolean blnIsFragmentLoaded = false;
 
     // UI Objects
-    private TextView tvAvailableDevices;
+    private TextView tvDiscoveredDevices;
     private TextView tvPairedDevices;
     private ListView lvDiscoveredList;
     private ListView lvPairedDevicesList;
@@ -88,6 +96,9 @@ public class DiscoveredDevice extends Fragment{
 
         // Define UI Objects
         defineUIObjects();
+
+        // Position UI objects
+        positionUIObjects();
 
         // Set the listeners
         Log.i(TAG, "Setting the listeners");
@@ -159,7 +170,7 @@ public class DiscoveredDevice extends Fragment{
     }
 
     private void defineUIObjects() {
-        tvAvailableDevices = (TextView) getView().findViewById(R.id.tvAvailableDevices);
+        tvDiscoveredDevices = (TextView) getView().findViewById(R.id.tvDiscoveredDevices);
         tvPairedDevices = (TextView) getView().findViewById(R.id.tvPairedDevices);
         lvDiscoveredList = (ListView) getView().findViewById(R.id.lstDiscoveredBTDevices);
         lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
@@ -170,6 +181,71 @@ public class DiscoveredDevice extends Fragment{
 
         pbLoading = (ProgressBar) getView().findViewById(R.id.spin_kit_progress);
         pbLoading.setIndeterminateDrawable(new DoubleBounce());
+    }
+
+    private void positionUIObjects() {
+        final ViewGroup vgDiscDevice = (ViewGroup) getView().findViewById(R.id.rlDiscoveredDevice);
+        final AtomicInteger aiLayoutHeight = new AtomicInteger();
+
+        Rect rect = new Rect();
+
+        // Get the window
+        Window win = getActivity().getWindow();
+        win.getDecorView().getWindowVisibleDisplayFrame(rect);
+
+        // Get height of Status bar
+        //int intStatusBarHeight = rect.top;
+
+        /*
+        // Get height of other contents
+        int intContentViewHeight = win.findViewById(Window.ID_ANDROID_CONTENT).getTop();
+
+        // Calculate titleBarHeight by deducting statusBarHeight from contentViewTop
+        int intTitleBarHeight = intContentViewHeight - intStatusBarHeight;
+        //Log.i(TAG, "TitleHeight = " + intTitleBarHeight +
+        //           " statusHeight = " + intStatusBarHeight +
+        //           " contentHeight = " + intContentViewHeight);
+        */
+
+        // Find height of AppBarLayout
+        //AppBarLayout appBar = (AppBarLayout) getActivity().findViewById(R.id.appBarLayout);
+        TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs);
+        AppBarLayout.LayoutParams ablParams = (AppBarLayout.LayoutParams) tabLayout.getLayoutParams();
+        //CoordinatorLayout.LayoutParams lpParams = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+
+        // Obtain the screen height & width
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int intScreenHeight = metrics.heightPixels;
+        int intScreenWidth = metrics.widthPixels;
+        Log.i(TAG, "Actual Screen Height = " + intScreenHeight + " Width = " + intScreenWidth);
+
+        // Now calculate the height that our layout can be set
+        //aiLayoutHeight.set(intScreenHeight - (intTitleBarHeight + intStatusBarHeight));
+        //Log.i(TAG, "Layout Height = " + aiLayoutHeight);
+
+        // Set the height of the layout
+        //ViewGroup.LayoutParams vgLayoutParams = vgDiscDevice.getLayoutParams();
+        //vgLayoutParams.height = aiLayoutHeight.get();
+        //vgDiscDevice.setLayoutParams(vgLayoutParams);
+
+        // Set the height for Discovered Devices list
+        RelativeLayout.LayoutParams rlParams;
+
+        // Get height of Discovered Devices text view height
+        rlParams = (RelativeLayout.LayoutParams) tvDiscoveredDevices.getLayoutParams();
+        int intDiscoveredDevicesTextHeight = rlParams.height;
+        //int intDiscoveredDevicesListHeight = (int)(Math.round(intScreenHeight * 0.45)/metrics.density);
+        int intDiscoveredDevicesListHeight = (int)(Math.round(intScreenHeight * 0.45));
+        Log.i(TAG, "Setting the height of Discovered Devices list as '" + intDiscoveredDevicesListHeight + "'");
+        //aiLayoutHeight.set(intDiscoveredDevicesListHeight);
+        //rlParams.height = aiLayoutHeight.get();
+        rlParams = (RelativeLayout.LayoutParams) lvDiscoveredList.getLayoutParams();
+        rlParams.height = intDiscoveredDevicesListHeight - rect.top - intDiscoveredDevicesTextHeight;
+        //rlParams.height = intDiscoveredDevicesListHeight - rect.top;
+        lvDiscoveredList.setLayoutParams(rlParams);
+
+
     }
 
     public void refreshFragment(boolean isVisibleToUser) {
@@ -421,7 +497,7 @@ public class DiscoveredDevice extends Fragment{
         lvDiscoveredList.setVisibility(intAction);
         lvPairedDevicesList.setVisibility(intAction);
         pbDiscDevicesSpinner.setVisibility(intAction);
-        tvAvailableDevices.setVisibility(intAction);
+        tvDiscoveredDevices.setVisibility(intAction);
         tvPairedDevices.setVisibility(intAction);
     }
 

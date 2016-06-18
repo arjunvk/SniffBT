@@ -99,7 +99,12 @@ public class BTActions {
             return null;
         }
 
-        return baBTAdapter.getBondedDevices();
+        if(isBluetoothTurnedOn()) {
+            return baBTAdapter.getBondedDevices();
+        }
+        else {
+            return null;
+        }
     }
 
     /**
