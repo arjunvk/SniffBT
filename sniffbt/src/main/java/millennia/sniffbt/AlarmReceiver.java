@@ -1,22 +1,17 @@
 package millennia.sniffbt;
 
 import android.bluetooth.BluetoothA2dp;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothHeadset;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.IBluetoothA2dp;
-import android.bluetooth.IBluetoothHeadset;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 import millennia.sniffbt.pairedDevice.Row;
@@ -25,14 +20,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     final String TAG = "SniffBT Alarm Receiver";
     BTActions btActions;
-    ArrayList<BluetoothDevice> arrDiscoveredDevicesList;
-    Row[] arrPairedDevicesList;
-    CommonFunctions cf = new CommonFunctions();
+    Row[] arrPairedDevicesSettings;
     Context context;
 
     // Initialize the variables for Bluetooth Profiles
-    IBluetoothHeadset ibth;
-
     BluetoothProfileServiceListener slA2DP;
     BluetoothProfileServiceListener slHS;
     BluetoothA2dp a2dp;
@@ -43,81 +34,63 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        arrPairedDevicesList = (Row[])intent.getSerializableExtra("PairedDevicesList");
+        arrPairedDevicesSettings = (Row[])intent.getSerializableExtra("PairedDevicesList");
 
-        searchBTDevices();
-    }
-
-    /**
-     * Method to search for nearby Bluetooth devices
-     */
-    public void searchBTDevices(){
-        IntentFilter filter = new IntentFilter();
+        // Turn On Bluetooth
+        Log.i(TAG, "Turning on Bluetooth...");
         btActions = new BTActions();
         btActions.turnOnBluetooth();
 
-        // Instantiate A2DP listener service
-        BluetoothAdapter ba = btActions.getBTAdapter();
+        // Instantiate listener services (A2DP and HS)
+        Log.i(TAG, "Instantiating A2DP and HS Service Listeners...");
         slA2DP = new BluetoothProfileServiceListener();
         slHS = new BluetoothProfileServiceListener();
-        ba.getProfileProxy(context, slA2DP, BluetoothProfile.A2DP);
-        ba.getProfileProxy(context, slHS, BluetoothProfile.HEADSET);
-
-        // Register Bluetooth Broadcast Receiver
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-
-        context.getApplicationContext().registerReceiver(btBroadcastReceiver, filter);
-
-        if(btActions.isDiscovering()) {
-            btActions.cancelDiscovery();
-        }
-
-        // Start discovery
-        btActions.startDiscovery();
+        btActions.getBTAdapter().getProfileProxy(context, slA2DP, BluetoothProfile.A2DP);
+        btActions.getBTAdapter().getProfileProxy(context, slHS, BluetoothProfile.HEADSET);
     }
 
     /**
-     * Method to check if any of the nearby devices is part of the Paired list
+     * Method to connect to Desired Paired devices.
      */
-    public void verifyIfAnyNearbyDeviceIsKnown() {
-        Log.i(TAG, "Verify if any nearby non-connected device is known");
-        boolean blnPairedDeviceToBeConnected = false;
+    private void connectDesiredDevices() {
+        Log.i(TAG, "Connecting to Desired Paired devices...");
 
-        if(arrDiscoveredDevicesList != null) {
-            for(BluetoothDevice nearbyDevice : arrDiscoveredDevicesList ) {
-                for(Row pairedDevice : arrPairedDevicesList) {
-                    if(pairedDevice.getDeviceName().equals(nearbyDevice.getName()) && pairedDevice.isCBChecked()){
-                        blnPairedDeviceToBeConnected = true;
-                        Log.i(TAG, "Paired device '" + pairedDevice.getDeviceName() + "' found");
-                        cf.displayNotification(context, "Device Found",
-                                               pairedDevice.getDeviceName(), MainActivity.class);
+        if(btActions.isBluetoothTurnedOn()) {
+            for(Row pairedDeviceSetting : arrPairedDevicesSettings) {
+                for(BluetoothDevice pairedDevice : btActions.getPairedDevicesList()) {
+                    if(pairedDeviceSetting.isCBChecked() &&
+                            pairedDeviceSetting.getDeviceAddress().equals(pairedDevice.getAddress())){
+                        Log.i(TAG, "Connecting device '" + pairedDevice.getName() + "'...");
+
                         // Connect the device
-                        actionOnBTDevice("CONNECT", nearbyDevice, hs);
-                        actionOnBTDevice("CONNECT", nearbyDevice, a2dp);
+                        actionOnBTDevice("CONNECT", pairedDevice, hs);
+                        actionOnBTDevice("CONNECT", pairedDevice, a2dp);
                     }
                 }
             }
+        }
+    }
 
-            if(!blnPairedDeviceToBeConnected && !isAnyDeviceCurrentlyConnected()) {
-                cf.displayNotification(context, "No Device Found",
-                        "Turning off bluetooth... TATA ba bye lol", MainActivity.class);
-                //cf.displayNotification(context, "Adhaan edhuvum illa nu theriyudhu la",
-                //                                "Poi kozhandaya padika vei...", MainActivity.class);
-                btActions.turnOffBluetooth();
+    /**
+     * Method to disconnect undesired Paired devices
+     */
+    private void disconnectUndesiredDevices() {
+        Log.i(TAG, "Disconnecting from undesired Paired devices...");
+
+        if(btActions.isBluetoothTurnedOn()) {
+            for(Row pairedDeviceSetting : arrPairedDevicesSettings) {
+                for(BluetoothDevice pairedDevice : btActions.getPairedDevicesList()) {
+                    if(!pairedDeviceSetting.isCBChecked() &&
+                            pairedDeviceSetting.getDeviceAddress().equals(pairedDevice.getAddress())) {
+                        Log.i(TAG, "Disconnecting device '" + pairedDevice.getName() + "'...");
+
+                        //Disconnect the device
+                        actionOnBTDevice("DISCONNECT", pairedDevice, hs);
+                        actionOnBTDevice("DISCONNECT", pairedDevice, a2dp);
+                    }
+                }
             }
         }
-
-        // Check if already connected devices need to remain the same way
-        checkIfDeviceConnectionIsRequired(connectedA2DPDevices);
-        checkIfDeviceConnectionIsRequired(connectedHSDevices);
-
-        // Unregister broadcast receiver and service listeners
-        context.getApplicationContext().unregisterReceiver(btBroadcastReceiver);
-        slA2DP = null;
-        slHS = null;
     }
 
     /**
@@ -170,81 +143,26 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     /**
-     * Method to check if a bluetooth connection is 'desired'. This device is compared with the checked Paired devices
-     * @param device - The {@link BluetoothDevice} device
-     */
-    private void checkIfDeviceConnectionIsRequired(BluetoothDevice device) {
-        for(Row pairedDevice : arrPairedDevicesList) {
-            if(pairedDevice.getDeviceName().equals(device.getName()) && !pairedDevice.isCBChecked()){
-                //Disconnect the device
-                actionOnBTDevice("DISCONNECT", device, hs);
-                actionOnBTDevice("DISCONNECT", device, a2dp);
-            }
-        }
-    }
-
-    /**
-     * Method to check if a bluetooth connection is 'desired'. This is for devices that are already connected
-     * @param devices the {@link List} of connected Bluetooth devices
-     */
-    private void checkIfDeviceConnectionIsRequired(List<BluetoothDevice> devices) {
-        for(Row pairedDevice : arrPairedDevicesList) {
-            for(BluetoothDevice device : devices) {
-                if(pairedDevice.getDeviceName().equals(device.getName()) && !pairedDevice.isCBChecked()){
-                    //Disconnect the device
-                    actionOnBTDevice("DISCONNECT", device, hs);
-                    actionOnBTDevice("DISCONNECT", device, a2dp);
-                }
-            }
-        }
-    }
-
-    /**
      * Method to verify if there are currently connected bluetooth devices
      * @return - True or False
      */
     private boolean isAnyDeviceCurrentlyConnected() {
-        return connectedA2DPDevices.size() != 0 || connectedHSDevices.size() != 0;
-    }
+        boolean blnIsDeviceConnected = false;
 
-    private final BroadcastReceiver btBroadcastReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-            if(BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                arrDiscoveredDevicesList = new ArrayList<>();
-            }
-            else if(BluetoothDevice.ACTION_FOUND.equals(action)) {
-                if(device.getName() != null) {
-                    arrDiscoveredDevicesList.add(device);
-                    Log.i(TAG, "Bluetooth device '" + device.getName() + "' found");
-                }
-            }
-            else if(BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                verifyIfAnyNearbyDeviceIsKnown();
-            }
-            else if(BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                checkIfDeviceConnectionIsRequired(device);
-                //if(btFoundPairedDevice != null) {
-                    Log.i(TAG, "Bluetooth device '" + device.getName() + "' connected successfully");
-                //}
-                //context.getApplicationContext().unregisterReceiver(btBroadcastReceiver);
-            }
-            else if("HEADSET_INTERFACE_CONNECTED".equals(action)) {
-                if(ibth != null) {
-                    try {
-                        ibth.connect(device);
-                    }
-                    catch (RemoteException e) {
-                        Log.i(TAG, e.toString());
-                    }
-                }
+        if(connectedA2DPDevices != null) {
+            if(connectedA2DPDevices.size() != 0) {
+                blnIsDeviceConnected = true;
             }
         }
-    };
+
+        if(connectedHSDevices != null) {
+            if(connectedHSDevices.size() != 0) {
+                blnIsDeviceConnected = true;
+            }
+        }
+
+        return blnIsDeviceConnected;
+    }
 
     private class BluetoothProfileServiceListener implements BluetoothProfile.ServiceListener {
         private final int[] states = {  BluetoothProfile.STATE_CONNECTED,
@@ -261,6 +179,26 @@ public class AlarmReceiver extends BroadcastReceiver {
             else if(bluetoothProfile instanceof BluetoothHeadset) {
                 hs = (BluetoothHeadset) bluetoothProfile;
                 connectedHSDevices = bluetoothProfile.getDevicesMatchingConnectionStates(states);
+            }
+
+            if(a2dp != null && hs != null) {
+                // Connect to checked devices
+                connectDesiredDevices();
+
+                // Disconnect from unchecked devices
+                disconnectUndesiredDevices();
+
+                // If bluetooth is 'already' connected or 'recently' connected, leave bluetooth on, else turn bluetooth off
+                if(!isAnyDeviceCurrentlyConnected()) {
+                    Log.i(TAG, "Turning off Bluetooth as no devices are currently connected...");
+                    btActions.turnOffBluetooth();
+                }
+
+                // Release service listeners
+                btActions.getBTAdapter().closeProfileProxy(BluetoothProfile.A2DP, a2dp);
+                btActions.getBTAdapter().closeProfileProxy(BluetoothProfile.HEADSET, hs);
+                slA2DP = null;
+                slHS = null;
             }
         }
 
