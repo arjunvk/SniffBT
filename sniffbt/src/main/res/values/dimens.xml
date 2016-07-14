@@ -9,4 +9,6 @@
     <dimen name="list_view_margin_top">16dp</dimen>
     <dimen name="list_view_divider_height">25dp</dimen>
     <dimen name="list_view_item_text_size">22sp</dimen>
+    <dimen name="settings_default_entity_distance">16dp</dimen>
+    <dimen name="settings_options_spacing">32dp</dimen>
 </resources>
