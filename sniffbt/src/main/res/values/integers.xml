@@ -1,0 +1,6 @@
+<resources>
+    <integer name="unpair_wait_time">15</integer>
+    
+    <integer name="one_minute_in_seconds">60</integer>
+    <integer name="two_minutes_in_seconds">120</integer>
+</resources>

@@ -21,6 +21,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:text="@string/text_list_discovered_devices"
+            android:visibility="gone"
             />
 
         <ProgressBar
@@ -30,7 +31,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toEndOf="@+id/tvDiscoveredDevices"
-            android:layout_marginStart="16dp" />
+            android:layout_marginStart="16dp"
+            android:visibility="gone"
+            />
 
         <ListView
             android:id="@+id/lstDiscoveredBTDevices"
@@ -42,6 +45,7 @@
             android:dividerHeight="@dimen/list_view_divider_height"
             android:choiceMode="singleChoice"
             android:listSelector="@color/list_item_selected"
+            android:visibility="gone"
             />
 
     </RelativeLayout>
@@ -61,6 +65,7 @@
             android:text="@string/suggest_BT_On"
             android:id="@+id/tvSuggestBTOn"
             android:layout_gravity="center_vertical"
+            android:visibility="gone"
             />
 
         <ImageView
@@ -69,7 +74,9 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_action_down"
             android:layout_weight="1"
-            android:contentDescription="@string/pair_bt" />
+            android:contentDescription="@string/pair_bt"
+            android:visibility="gone"
+            />
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/spin_kit_progress"
@@ -77,6 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:SpinKit_Color="@color/colorAccent"
+            android:visibility="gone"
             />
 
         <ImageView
@@ -85,7 +93,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/ic_action_up"
-            android:contentDescription="@string/unpair_bt" />
+            android:contentDescription="@string/unpair_bt"
+            android:visibility="gone"
+            />
 
     </LinearLayout>
 
@@ -101,6 +111,7 @@
             android:id="@+id/tvPairedDevices"
             android:text="@string/text_list_paired_devices"
             android:layout_alignParentStart="true"
+            android:visibility="gone"
             />
 
         <ListView
@@ -114,6 +125,7 @@
             android:layout_below="@+id/tvPairedDevices"
             android:layout_marginTop="@dimen/list_view_margin_top"
             android:layout_alignParentStart="true"
+            android:visibility="gone"
             />
 
     </RelativeLayout>
