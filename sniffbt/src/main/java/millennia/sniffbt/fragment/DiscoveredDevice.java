@@ -178,7 +178,6 @@ public class DiscoveredDevice extends Fragment{
 
                 hideUnhideLists(View.VISIBLE);
                 tvSuggestBTOn.setVisibility(View.GONE);
-                pbLoading.setVisibility(View.GONE); // CAN BE REMOVED AFTER UPDATING XML
 
                 // Clear both the lists
                 Log.i(TAG, "Clearing both lists");
@@ -197,7 +196,6 @@ public class DiscoveredDevice extends Fragment{
 
                 hideUnhideLists(View.GONE);
                 tvSuggestBTOn.setVisibility(View.VISIBLE);
-                pbLoading.setVisibility(View.GONE); // CAN BE REMOVED AFTER UPDATING XML
             }
         }
         else {
@@ -338,7 +336,7 @@ public class DiscoveredDevice extends Fragment{
      */
     private void unpairDevice(final BluetoothDevice device) {
         final Handler hPBHandler = new Handler();
-        final int intUnpairWaitTime = 15;
+        final int intUnpairWaitTime = R.integer.unpair_wait_time;
 
         try {
             Method method = device.getClass().getMethod("removeBond", (Class[]) null);
