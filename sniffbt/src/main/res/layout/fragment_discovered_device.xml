@@ -1,116 +1,121 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rlDiscoveredDevice"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="millennia.sniffbt.fragment.DiscoveredDevice">
+    android:paddingTop="@dimen/activity_vertical_margin">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvDiscoveredDevices"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:text="@string/text_list_discovered_devices"
-        android:visibility="gone" />
-
-    <ProgressBar
-        android:id="@+id/pbDiscoveredDevices"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/tvDiscoveredDevices"
-        android:layout_marginStart="16dp"
-        android:visibility="gone" />
-
-    <ListView
-        android:id="@+id/lstDiscoveredBTDevices"
-        android:layout_height="250dp"
-        android:layout_width="wrap_content"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="@dimen/list_view_divider_height"
-        android:choiceMode="singleChoice"
-        android:listSelector="@color/list_item_selected"
-        android:layout_below="@+id/tvDiscoveredDevices"
-        android:layout_marginTop="@dimen/list_view_margin_top"
-        android:layout_above="@+id/tvSuggestBTOn"
-        android:visibility="gone" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/pairBT"
-        android:background="@drawable/ic_action_down"
-        android:layout_marginStart="134dp"
-        android:layout_below="@+id/lstDiscoveredBTDevices"
-        android:layout_alignParentStart="true"
-        android:visibility="gone" />
-
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/unpairBT"
-        android:background="@drawable/ic_action_up"
-        android:layout_below="@+id/lstDiscoveredBTDevices"
-        android:layout_toEndOf="@+id/pairBT"
-        android:layout_marginStart="73dp"
-        android:visibility="gone" />
-
-    <com.github.ybq.android.spinkit.SpinKitView
-        android:id="@+id/spin_kit_progress"
-        style="@style/SpinKitView.Large.DoubleBounce"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:SpinKit_Color="@color/colorAccent"
-        android:layout_alignBottom="@+id/unpairBT"
-        android:layout_toEndOf="@+id/pairBT"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvPairedDevices"
-        android:text="@string/text_list_paired_devices"
-        android:layout_below="@+id/pairBT"
-        android:layout_alignParentStart="true"
-        android:visibility="gone" />
-
-    <ListView
-        android:id="@+id/lstPairedBTDevices"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="@dimen/list_view_divider_height"
-        android:choiceMode="singleChoice"
-        android:listSelector="@color/list_item_selected"
-        android:layout_below="@+id/tvPairedDevices"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="@dimen/list_view_margin_top"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/suggest_BT_On"
-        android:id="@+id/tvSuggestBTOn"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone" />
-
-    <FrameLayout
+    <RelativeLayout
+        android:id="@+id/rlDiscoveredDevice"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="75dp"
-        android:layout_marginTop="16dp"></FrameLayout>
+        android:layout_height="0dp"
+        android:layout_weight="9">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/tvDiscoveredDevices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/text_list_discovered_devices"
+            />
+
+        <ProgressBar
+            android:id="@+id/pbDiscoveredDevices"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/tvDiscoveredDevices"
+            android:layout_marginStart="16dp" />
+
+        <ListView
+            android:id="@+id/lstDiscoveredBTDevices"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tvDiscoveredDevices"
+            android:layout_marginTop="@dimen/list_view_margin_top"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="@dimen/list_view_divider_height"
+            android:choiceMode="singleChoice"
+            android:listSelector="@color/list_item_selected"
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/llPairUnpair"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_weight="2">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/suggest_BT_On"
+            android:id="@+id/tvSuggestBTOn"
+            android:layout_gravity="center_vertical"
+            />
+
+        <ImageView
+            android:id="@+id/pairBT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_down"
+            android:layout_weight="1"
+            android:contentDescription="@string/pair_bt" />
+
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/spin_kit_progress"
+            style="@style/SpinKitView.Large.DoubleBounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:SpinKit_Color="@color/colorAccent"
+            />
+
+        <ImageView
+            android:id="@+id/unpairBT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_action_up"
+            android:contentDescription="@string/unpair_bt" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlPairedDevice"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvPairedDevices"
+            android:text="@string/text_list_paired_devices"
+            android:layout_alignParentStart="true"
+            />
+
+        <ListView
+            android:id="@+id/lstPairedBTDevices"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="@dimen/list_view_divider_height"
+            android:choiceMode="singleChoice"
+            android:listSelector="@color/list_item_selected"
+            android:layout_below="@+id/tvPairedDevices"
+            android:layout_marginTop="@dimen/list_view_margin_top"
+            android:layout_alignParentStart="true"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>
