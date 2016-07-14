@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity{
         mViewPagerAdapter.addFragment(new PairedDevice(), "");
         mViewPagerAdapter.addFragment(new DiscoveredDevice(), "");
         mViewPagerAdapter.addFragment(new Settings(), "");
-        //int temp = mViewPagerAdapter.getItem(1).getId();
+        mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(mViewPagerAdapter);
     }
 
