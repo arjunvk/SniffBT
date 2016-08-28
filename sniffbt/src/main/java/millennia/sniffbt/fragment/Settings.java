@@ -35,7 +35,7 @@ public class Settings extends Fragment {
         super.onCreate(savedInstanceState);
 
         // Define variables
-        appPrefs = this.getActivity().getPreferences(Context.MODE_PRIVATE);
+        appPrefs = getActivity().getApplicationContext().getSharedPreferences(getString(R.string.app_shared_pref_filename), Context.MODE_PRIVATE);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,18 +60,14 @@ public class Settings extends Fragment {
         rbOpt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cf.setSharedPreferences(appPrefs,
-                                        getString(R.string.SH_PREF_Scan_Frequency_In_Seconds),
-                                        R.integer.one_minute_in_seconds);
+                cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), 60);
             }
         });
 
         rbOpt2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cf.setSharedPreferences(appPrefs,
-                                        getString(R.string.SH_PREF_Scan_Frequency_In_Seconds),
-                                        R.integer.two_minutes_in_seconds);
+                cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), 120);
             }
         });
     }
@@ -94,13 +90,11 @@ public class Settings extends Fragment {
         if(isVisibleToUser) {
             if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), Integer.class) != null) {
                 if((Integer)cf.getSharedPreferences(appPrefs,
-                        getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), Integer.class) ==
-                        R.integer.one_minute_in_seconds) {
+                    getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), Integer.class) == 60) {
                     rbOpt1.setChecked(true);
                 }
                 else if((Integer)cf.getSharedPreferences(appPrefs,
-                        getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), Integer.class) ==
-                        R.integer.two_minutes_in_seconds) {
+                         getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), Integer.class) == 120) {
                     rbOpt2.setChecked(true);
                 }
             }
