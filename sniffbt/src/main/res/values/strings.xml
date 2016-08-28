@@ -20,4 +20,6 @@
 
     <string name="pair_bt">Pair BT</string>
     <string name="unpair_bt">Unpair BT</string>
+
+    <string name="app_shared_pref_filename">millennia.sniffbt.globalsharedpreferences</string>
 </resources>
