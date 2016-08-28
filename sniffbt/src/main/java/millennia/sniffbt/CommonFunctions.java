@@ -60,9 +60,18 @@ public class CommonFunctions {
     public void setSharedPreferences(SharedPreferences mPref, String strReferenceName, Object obj) {
         SharedPreferences.Editor prefEditor = mPref.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(obj);
-        prefEditor.putString(strReferenceName, json);
-        prefEditor.commit();
+        String json;
+
+        try {
+            int intNumber = (int) obj;
+            prefEditor.putInt(strReferenceName, intNumber);
+        }
+        catch (ClassCastException cce) {
+            json = gson.toJson(obj);
+            prefEditor.putString(strReferenceName, json);
+        }
+
+        prefEditor.apply();
     }
 
     /**
@@ -73,8 +82,13 @@ public class CommonFunctions {
      */
     public Object getSharedPreferences(SharedPreferences mPref, String strReferenceName, Class<?> objClass) {
         Gson gson = new Gson();
-        String json = mPref.getString(strReferenceName, "");
-        return gson.fromJson(json, objClass);
+        if(objClass.getCanonicalName().contains("Integer") || objClass.getCanonicalName().contains("int")) {
+            return mPref.getInt(strReferenceName, 0);
+        }
+        else {
+            String json = mPref.getString(strReferenceName, "");
+            return gson.fromJson(json, objClass);
+        }
     }
 
     /**
