@@ -9,43 +9,32 @@
     android:paddingTop="@dimen/activity_vertical_margin">
 
     <RelativeLayout
-        android:id="@+id/rlDiscoveredDevice"
+        android:id="@+id/rlPairedDevice"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9">
 
         <TextView
-            android:id="@+id/tvDiscoveredDevices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/tvPairedDevices"
+            android:text="@string/text_list_paired_devices"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:text="@string/text_list_discovered_devices"
-            android:visibility="gone"
-            />
-
-        <ProgressBar
-            android:id="@+id/pbDiscoveredDevices"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/tvDiscoveredDevices"
-            android:layout_marginStart="16dp"
-            android:visibility="gone"
+            
             />
 
         <ListView
-            android:id="@+id/lstDiscoveredBTDevices"
-            android:layout_width="match_parent"
+            android:id="@+id/lstPairedBTDevices"
             android:layout_height="match_parent"
-            android:layout_below="@+id/tvDiscoveredDevices"
-            android:layout_marginTop="@dimen/list_view_margin_top"
+            android:layout_width="match_parent"
             android:divider="@android:color/transparent"
             android:dividerHeight="@dimen/list_view_divider_height"
             android:choiceMode="singleChoice"
             android:listSelector="@color/list_item_selected"
-            android:visibility="gone"
+            android:layout_below="@+id/tvPairedDevices"
+            android:layout_marginTop="@dimen/list_view_margin_top"
+            android:layout_alignParentStart="true"
+            
             />
 
     </RelativeLayout>
@@ -65,68 +54,71 @@
             android:text="@string/suggest_BT_On"
             android:id="@+id/tvSuggestBTOn"
             android:layout_gravity="center_vertical"
-            android:visibility="gone"
+            
             />
 
         <ImageView
             android:id="@+id/pairBT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_action_down"
             android:layout_weight="1"
+            android:src="@drawable/ic_action_up"
             android:contentDescription="@string/pair_bt"
-            android:visibility="gone"
+            
             />
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/spin_kit_progress"
             style="@style/SpinKitView.Large.DoubleBounce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             app:SpinKit_Color="@color/colorAccent"
-            android:visibility="gone"
+            
             />
 
         <ImageView
             android:id="@+id/unpairBT"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_down"
             android:layout_weight="1"
-            android:src="@drawable/ic_action_up"
             android:contentDescription="@string/unpair_bt"
-            android:visibility="gone"
+            
             />
 
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/rlPairedDevice"
+        android:id="@+id/rlDiscoveredDevice"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9">
 
         <TextView
+            android:id="@+id/tvDiscoveredDevices"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvPairedDevices"
-            android:text="@string/text_list_paired_devices"
             android:layout_alignParentStart="true"
-            android:visibility="gone"
+            android:layout_alignParentTop="true"
+            android:text="@string/text_list_discovered_devices"
             />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ivRefreshDiscDevices"
+            android:src="@drawable/ic_action_refresh_disc_devices"
+            android:layout_toEndOf="@+id/tvDiscoveredDevices" />
+
         <ListView
-            android:id="@+id/lstPairedBTDevices"
-            android:layout_height="match_parent"
+            android:id="@+id/lstDiscoveredBTDevices"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:divider="@android:color/transparent"
             android:dividerHeight="@dimen/list_view_divider_height"
             android:choiceMode="singleChoice"
             android:listSelector="@color/list_item_selected"
-            android:layout_below="@+id/tvPairedDevices"
-            android:layout_marginTop="@dimen/list_view_margin_top"
-            android:layout_alignParentStart="true"
-            android:visibility="gone"
-            />
+            android:layout_below="@+id/ivRefreshDiscDevices" />
 
     </RelativeLayout>
 
