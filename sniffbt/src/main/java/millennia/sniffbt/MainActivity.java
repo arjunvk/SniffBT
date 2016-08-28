@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         // Define variables
-        appPrefs = getPreferences(Context.MODE_PRIVATE);
+        appPrefs = getSharedPreferences(getString(R.string.app_shared_pref_filename), Context.MODE_PRIVATE);
         final FloatingActionButton mSniffBT = (FloatingActionButton) findViewById(R.id.sniffBT);
         final FloatingActionButton mBTOnOrOff = (FloatingActionButton) findViewById(R.id.btOnOff);
 
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity{
 
                 // Obtain the list of Paired Devices settings
                 //if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class) != null) {
-                if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), Integer.class) != null) {
+                if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), int.class) != null) {
                     arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs,
                                                    getString(R.string.SH_PREF_Paired_Devices), Row[].class);
 
