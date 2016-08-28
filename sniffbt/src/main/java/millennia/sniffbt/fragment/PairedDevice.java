@@ -41,7 +41,7 @@ public class PairedDevice extends Fragment implements SniffBTInterface {
         super.onCreate(savedInstanceState);
 
         // Define variables
-        appPrefs = this.getActivity().getPreferences(Context.MODE_PRIVATE);
+        appPrefs = getActivity().getApplicationContext().getSharedPreferences(getString(R.string.app_shared_pref_filename), Context.MODE_PRIVATE);
     }
 
     @Override
