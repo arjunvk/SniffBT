@@ -12,6 +12,12 @@ import android.view.View;
 
 import com.google.gson.Gson;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 public class CommonFunctions {
 
     /**
@@ -99,5 +105,42 @@ public class CommonFunctions {
         Snackbar snackbar = Snackbar.make(view, strMsg, intTime);
         snackbar.show();
     }
+
+    /**
+     * Method to serialize an object as a byte[]
+     * @param obj - The Object to serialize
+     * @return - The {@link byte[]} object
+     */
+    public byte[] serialize(Object obj){
+        ByteArrayOutputStream out = null;
+        try {
+            out = new ByteArrayOutputStream();
+            ObjectOutputStream os = new ObjectOutputStream(out);
+            os.writeObject(obj);
+        }
+        catch(IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return out.toByteArray();
+    }
+
+    /**
+     * Method to deserialize an object
+     * @param data - The {@link byte[]} object
+     * @return - The Object
+     */
+    public Object deserialize(byte[] data){
+        try {
+            ByteArrayInputStream in = new ByteArrayInputStream(data);
+            ObjectInputStream is = new ObjectInputStream(in);
+            return is.readObject();
+        }
+        catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
 }
