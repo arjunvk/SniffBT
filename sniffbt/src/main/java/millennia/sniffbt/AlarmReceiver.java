@@ -22,6 +22,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     BTActions btActions;
     Row[] arrPairedDevicesSettings;
     Context context;
+    CommonFunctions cf = new CommonFunctions();
 
     // Initialize the variables for Bluetooth Profiles
     BluetoothProfileServiceListener slA2DP;
@@ -34,7 +35,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        arrPairedDevicesSettings = (Row[])intent.getSerializableExtra("PairedDevicesList");
+        arrPairedDevicesSettings = (Row[])cf.deserialize(intent.getByteArrayExtra("PairedDevicesList"));
 
         // Turn On Bluetooth
         Log.i(TAG, "Turning on Bluetooth...");

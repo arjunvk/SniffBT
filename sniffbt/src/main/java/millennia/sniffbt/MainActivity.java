@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity{
                     intentListenBT = new Intent(getApplicationContext(), ListenBTIntentService.class);
                     Log.i(TAG, "Starting Intent Service...");
 
-                    intentListenBT.putExtra("PairedDevicesList", arrPairedDevicesList);
+                    intentListenBT.putExtra("PairedDevicesList", cf.serialize(arrPairedDevicesList));
                     getApplicationContext().startService(intentListenBT);
                 }
                 else {
