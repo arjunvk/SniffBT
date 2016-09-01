@@ -12,7 +12,8 @@
         android:id="@+id/rlPairedDevice"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9">
+        android:layout_weight="9"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
@@ -20,7 +21,6 @@
             android:id="@+id/tvPairedDevices"
             android:text="@string/text_list_paired_devices"
             android:layout_alignParentStart="true"
-            
             />
 
         <ListView
@@ -34,7 +34,6 @@
             android:layout_below="@+id/tvPairedDevices"
             android:layout_marginTop="@dimen/list_view_margin_top"
             android:layout_alignParentStart="true"
-            
             />
 
     </RelativeLayout>
@@ -64,7 +63,7 @@
             android:layout_weight="1"
             android:src="@drawable/ic_action_up"
             android:contentDescription="@string/pair_bt"
-            
+            android:visibility="gone"
             />
 
         <com.github.ybq.android.spinkit.SpinKitView
@@ -73,7 +72,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             app:SpinKit_Color="@color/colorAccent"
-            
+            android:visibility="gone"
             />
 
         <ImageView
@@ -83,7 +82,7 @@
             android:src="@drawable/ic_action_down"
             android:layout_weight="1"
             android:contentDescription="@string/unpair_bt"
-            
+            android:visibility="gone"
             />
 
     </LinearLayout>
@@ -92,7 +91,8 @@
         android:id="@+id/rlDiscoveredDevice"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9">
+        android:layout_weight="9"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tvDiscoveredDevices"
@@ -103,13 +103,6 @@
             android:text="@string/text_list_discovered_devices"
             />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ivRefreshDiscDevices"
-            android:src="@drawable/ic_action_refresh_disc_devices"
-            android:layout_toEndOf="@+id/tvDiscoveredDevices" />
-
         <ListView
             android:id="@+id/lstDiscoveredBTDevices"
             android:layout_width="match_parent"
@@ -118,7 +111,32 @@
             android:dividerHeight="@dimen/list_view_divider_height"
             android:choiceMode="singleChoice"
             android:listSelector="@color/list_item_selected"
-            android:layout_below="@+id/ivRefreshDiscDevices" />
+            android:layout_below="@+id/tvDiscoveredDevices"
+            android:layout_marginTop="@dimen/list_view_margin_top"
+            android:layout_alignParentStart="true"/>
+
+        <FrameLayout
+            android:id="@+id/flRefreshDiscDevices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:id="@+id/btnRefreshDiscDevices"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                style="?android:attr/borderlessButtonStyle"/>
+
+            <ImageView
+                android:id="@+id/ivRefreshDiscDevices"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_action_refresh_disc_devices"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
 
     </RelativeLayout>
 

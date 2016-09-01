@@ -19,9 +19,12 @@ import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.ybq.android.spinkit.style.DoubleBounce;
@@ -47,6 +50,8 @@ public class DiscoveredDevice extends Fragment{
     private boolean blnIsFragmentLoaded = false;
 
     // UI Objects
+    private RelativeLayout rlPairedDevices;
+    private RelativeLayout rlDiscDevices;
     private TextView tvDiscoveredDevices;
     private TextView tvPairedDevices;
     private ListView lvDiscoveredList;
@@ -55,7 +60,8 @@ public class DiscoveredDevice extends Fragment{
     private ImageView ibtnUnPair;
     private TextView tvSuggestBTOn;
     private ProgressBar pbLoading;
-    private ImageView ivRefreshDiscoveredDevices;
+    private FrameLayout flRefresh;
+    private Button btnRefresh;
 
     public DiscoveredDevice() {
         btActions = new BTActions();
@@ -147,6 +153,14 @@ public class DiscoveredDevice extends Fragment{
             }
         });
 
+        // Listener for Refresh button
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setUserVisibleHint(true);
+            }
+        });
+
         blnIsFragmentLoaded = true;
     }
 
@@ -158,6 +172,8 @@ public class DiscoveredDevice extends Fragment{
     }
 
     private void defineUIObjects() {
+        rlPairedDevices = (RelativeLayout) getView().findViewById(R.id.rlPairedDevice);
+        rlDiscDevices = (RelativeLayout) getView().findViewById(R.id.rlDiscoveredDevice);
         tvDiscoveredDevices = (TextView) getView().findViewById(R.id.tvDiscoveredDevices);
         tvPairedDevices = (TextView) getView().findViewById(R.id.tvPairedDevices);
         lvDiscoveredList = (ListView) getView().findViewById(R.id.lstDiscoveredBTDevices);
@@ -165,8 +181,8 @@ public class DiscoveredDevice extends Fragment{
         ibtnPair = (ImageView) getView().findViewById(R.id.pairBT);
         ibtnUnPair = (ImageView) getView().findViewById(R.id.unpairBT);
         tvSuggestBTOn = (TextView) getView().findViewById(R.id.tvSuggestBTOn);
-        //pbDiscDevicesSpinner = (ProgressBar) getView().findViewById(R.id.pbDiscoveredDevices);
-        ivRefreshDiscoveredDevices = (ImageView) getView().findViewById(R.id.ivRefreshDiscDevices);
+        flRefresh = (FrameLayout) getView().findViewById(R.id.flRefreshDiscDevices);
+        btnRefresh = (Button) getView().findViewById(R.id.btnRefreshDiscDevices);
 
         pbLoading = (ProgressBar) getView().findViewById(R.id.spin_kit_progress);
         pbLoading.setIndeterminateDrawable(new DoubleBounce());
@@ -195,33 +211,7 @@ public class DiscoveredDevice extends Fragment{
                 listPairedBTDevices();
                 strDiscoveredListItemSelected = "";
 
-                listDiscoveredBTDevices();
-
-                // Refresh Discovery every 5 seconds
                 refreshDiscoveredDevices();
-
-                /*
-                getActivity().runOnUiThread(new Runnable() {
-                  @Override
-                    public void run() {
-                        do {
-
-                            cf.sleepForNSeconds(5);
-                        }
-                        while(blnIsFragmentLoaded);
-                    }
-                });
-
-                new Thread(){
-                    public void run(){
-                        do {
-                            listDiscoveredBTDevices();
-                            cf.sleepForNSeconds(5);
-                        }
-                        while(blnIsFragmentLoaded);
-                    }
-                }.start();
-                */
             }
             else {
                 Log.i(TAG, "Bluetooth is turned off. Hiding all objects on this fragment");
@@ -256,13 +246,18 @@ public class DiscoveredDevice extends Fragment{
      * Method to refresh discovered devices
      */
     private void refreshDiscoveredDevices() {
+        Log.i(TAG, "Refreshing Discoverable devices...");
+
+        // Disable the Refresh button
+        btnRefresh.setEnabled(false);
+
         Animation animation = new RotateAnimation(0.0f, 360.0f,
                                   Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
                                   0.5f);
         animation.setRepeatCount(-1);
         animation.setDuration(2000);
 
-        getView().findViewById(R.id.ivRefreshDiscDevices).setAnimation(animation);
+        flRefresh.setAnimation(animation);
 
         listDiscoveredBTDevices();
     }
@@ -286,7 +281,6 @@ public class DiscoveredDevice extends Fragment{
         // Start discovery
         Log.i(TAG, "Starting Bluetooth discovery...");
         btActions.startDiscovery();
-        //pbDiscDevicesSpinner.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -463,11 +457,9 @@ public class DiscoveredDevice extends Fragment{
     private void hideUnhideLists(int intAction) {
         ibtnPair.setVisibility(intAction);
         ibtnUnPair.setVisibility(intAction);
-        lvDiscoveredList.setVisibility(intAction);
-        lvPairedDevicesList.setVisibility(intAction);
-        //pbDiscDevicesSpinner.setVisibility(intAction);
-        tvDiscoveredDevices.setVisibility(intAction);
-        tvPairedDevices.setVisibility(intAction);
+        rlPairedDevices.setVisibility(intAction);
+        rlDiscDevices.setVisibility(intAction);
+        flRefresh.setVisibility(intAction);
     }
 
     private boolean isDevicePresentInPairedDevicesList(BluetoothDevice device) {
@@ -522,10 +514,11 @@ public class DiscoveredDevice extends Fragment{
 
                 displayDiscoveredDevices();
 
-                //pbDiscDevicesSpinner.clearAnimation();
-                //pbDiscDevicesSpinner.setVisibility(View.GONE);
-                getView().findViewById(R.id.ivRefreshDiscDevices).clearAnimation();
+                flRefresh.clearAnimation();
                 context.unregisterReceiver(btBroadcastReceiver);
+
+                // Enable the Refresh button
+                btnRefresh.setEnabled(true);
             }
         }
     };
