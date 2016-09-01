@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity{
 
         // Define variables
         appPrefs = getSharedPreferences(getString(R.string.app_shared_pref_filename), Context.MODE_PRIVATE);
+        intentListenBT = new Intent(getApplicationContext(), ListenBTIntentService.class);
         final FloatingActionButton mSniffBT = (FloatingActionButton) findViewById(R.id.sniffBT);
         final FloatingActionButton mBTOnOrOff = (FloatingActionButton) findViewById(R.id.btOnOff);
 
@@ -80,6 +81,19 @@ public class MainActivity extends AppCompatActivity{
         Log.i(TAG, "Setting tab icons ...");
         setupTabIcons(0);
 
+        // Setting the Sniff BT icon
+        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class) != null) {
+            if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
+                mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
+            }
+            else if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
+                mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_on));
+            }
+        }
+        else {
+            mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
+        }
+
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -88,6 +102,17 @@ public class MainActivity extends AppCompatActivity{
                 switch (tab.getPosition()) {
                     case PAIRED_DEVICE_POSITION:
                         mSniffBT.show();
+                        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class) != null) {
+                            if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
+                                mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
+                            }
+                            else if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
+                                mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_on));
+                            }
+                        }
+                        else {
+                            mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
+                        }
                         mBTOnOrOff.hide();
                         break;
 
@@ -121,19 +146,29 @@ public class MainActivity extends AppCompatActivity{
         mSniffBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // Obtain the list of Paired Devices settings
-                //if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class) != null) {
                 if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), int.class) != null) {
-                    arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs,
-                                                   getString(R.string.SH_PREF_Paired_Devices), Row[].class);
+                    if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class) != null) {
+                        if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
+                            // Turn on Sniff BT
+                            arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs,
+                                                           getString(R.string.SH_PREF_Paired_Devices), Row[].class);
 
-                    // Start service to listen to BT
-                    intentListenBT = new Intent(getApplicationContext(), ListenBTIntentService.class);
-                    Log.i(TAG, "Starting Intent Service...");
+                            // Start service to listen to BT
+                            Log.i(TAG, "Starting Intent Service...");
+                            intentListenBT.putExtra("PairedDevicesList", cf.serialize(arrPairedDevicesList));
+                            getApplicationContext().startService(intentListenBT);
 
-                    intentListenBT.putExtra("PairedDevicesList", cf.serialize(arrPairedDevicesList));
-                    getApplicationContext().startService(intentListenBT);
+                            cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), "ON");
+                            mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_on));
+                        }
+                        else if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
+                            // Turn off Sniff BT
+                            getApplicationContext().stopService(intentListenBT);
+
+                            cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), "OFF");
+                            mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
+                        }
+                    }
                 }
                 else {
                     cf.showSnackBar(v, "Set the frequency of scan", Snackbar.LENGTH_SHORT);
