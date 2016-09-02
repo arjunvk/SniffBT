@@ -9,8 +9,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,10 +52,9 @@ public class DiscoveredDevice extends Fragment{
     private boolean blnIsFragmentLoaded = false;
 
     // UI Objects
+    private FloatingActionButton fabBTOnOrOff;
     private RelativeLayout rlPairedDevices;
     private RelativeLayout rlDiscDevices;
-    private TextView tvDiscoveredDevices;
-    private TextView tvPairedDevices;
     private ListView lvDiscoveredList;
     private ListView lvPairedDevicesList;
     private ImageView ibtnPair;
@@ -172,10 +173,9 @@ public class DiscoveredDevice extends Fragment{
     }
 
     private void defineUIObjects() {
+        fabBTOnOrOff = (FloatingActionButton) getActivity().findViewById(R.id.btOnOff);
         rlPairedDevices = (RelativeLayout) getView().findViewById(R.id.rlPairedDevice);
         rlDiscDevices = (RelativeLayout) getView().findViewById(R.id.rlDiscoveredDevice);
-        tvDiscoveredDevices = (TextView) getView().findViewById(R.id.tvDiscoveredDevices);
-        tvPairedDevices = (TextView) getView().findViewById(R.id.tvPairedDevices);
         lvDiscoveredList = (ListView) getView().findViewById(R.id.lstDiscoveredBTDevices);
         lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
         ibtnPair = (ImageView) getView().findViewById(R.id.pairBT);
@@ -190,6 +190,7 @@ public class DiscoveredDevice extends Fragment{
 
     public void refreshFragment(boolean isVisibleToUser) {
         if(isVisibleToUser) {
+
             blnIsFragmentLoaded = true;
 
             // Refresh the Discoverable devices if Bluetooth is on
@@ -212,6 +213,8 @@ public class DiscoveredDevice extends Fragment{
                 strDiscoveredListItemSelected = "";
 
                 refreshDiscoveredDevices();
+
+                fabBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_action_bt_on));
             }
             else {
                 Log.i(TAG, "Bluetooth is turned off. Hiding all objects on this fragment");
@@ -219,6 +222,8 @@ public class DiscoveredDevice extends Fragment{
                 hideUnhideLists(View.GONE);
                 tvSuggestBTOn.setVisibility(View.VISIBLE);
                 pbLoading.setVisibility(View.GONE); // CAN BE REMOVED AFTER UPDATING XML
+
+                fabBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_action_bt_off));
             }
         }
         else {
@@ -229,6 +234,7 @@ public class DiscoveredDevice extends Fragment{
                     tvSuggestBTOn.setVisibility(View.GONE);
                 }
                 if(btActions.isDiscovering()) {
+                    Log.i(TAG, "Cancel Bluetooth discovery");
                     btActions.cancelDiscovery();
                 }
             }
@@ -249,8 +255,10 @@ public class DiscoveredDevice extends Fragment{
         Log.i(TAG, "Refreshing Discoverable devices...");
 
         // Disable the Refresh button
+        Log.i(TAG, "Disable Refresh button");
         btnRefresh.setEnabled(false);
 
+        Log.i(TAG, "Start Refresh button animation...");
         Animation animation = new RotateAnimation(0.0f, 360.0f,
                                   Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
                                   0.5f);
@@ -266,12 +274,14 @@ public class DiscoveredDevice extends Fragment{
      * Method to display the list of discovered BT devices
      */
     private void listDiscoveredBTDevices() {
+        Log.i(TAG, "Listing Discovered devices...");
         IntentFilter filter = new IntentFilter();
 
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
+        Log.i(TAG, "Register Bluetooth service");
         getContext().registerReceiver(btBroadcastReceiver, filter);
 
         if(btActions.isDiscovering()) {
@@ -294,6 +304,7 @@ public class DiscoveredDevice extends Fragment{
                 btPairedListArrayAdapter.add(device.getName());
             }
 
+            Log.i(TAG, "Listing Paired devices");
             lvPairedDevicesList.setAdapter(btPairedListArrayAdapter);
         }
     }
@@ -305,7 +316,13 @@ public class DiscoveredDevice extends Fragment{
         boolean blnIsBtOn = true;
         if(!btActions.isBluetoothTurnedOn()) {
             blnIsBtOn = false;
-            btActions.turnOnBluetooth();
+            try {
+                btActions.turnOnBluetooth();
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+                return;
+            }
         }
 
         arrPairedDevicesList = btActions.getPairedDevicesList();
@@ -320,6 +337,7 @@ public class DiscoveredDevice extends Fragment{
      * @param device - The {@link BluetoothDevice}
      */
     private void pairDevice(final BluetoothDevice device) {
+        Log.i(TAG, "Pair device - " + device.getName());
         final Handler hPBHandler = new Handler();
         final int intPairWaitTime = 45;
 
@@ -356,6 +374,11 @@ public class DiscoveredDevice extends Fragment{
                             listPairedBTDevices();
                             strDiscoveredListItemSelected = "";
                             listDiscoveredBTDevices();
+
+                            Log.i(TAG, "Stop Refresh button animation");
+                            flRefresh.clearAnimation();
+                            Log.i(TAG, "Enabling Refresh button");
+                            btnRefresh.setEnabled(true);
                         }
                     });
 
@@ -365,6 +388,14 @@ public class DiscoveredDevice extends Fragment{
                     else {
                         cf.showSnackBar(getView(), "'" + device.getName() + "' did not pair.", Snackbar.LENGTH_SHORT);
                     }
+
+                    // Stop Bluetooth scanning, if still running
+                    Log.i(TAG, "Stop Bluetooth scanning");
+                    //getContext().unregisterReceiver(btBroadcastReceiver);
+                    if(btActions.isDiscovering()) {
+                        btActions.cancelDiscovery();
+                    }
+
                 }
             }).start();
 
@@ -378,6 +409,7 @@ public class DiscoveredDevice extends Fragment{
      * @param device - The {@link BluetoothDevice}
      */
     private void unpairDevice(final BluetoothDevice device) {
+        Log.i(TAG, "Unpair device - " + device.getName());
         final Handler hPBHandler = new Handler();
         final int intUnpairWaitTime = R.integer.unpair_wait_time;
 
@@ -414,6 +446,8 @@ public class DiscoveredDevice extends Fragment{
                             listPairedBTDevices();
                             strDiscoveredListItemSelected = "";
                             listDiscoveredBTDevices();
+                            flRefresh.clearAnimation();
+                            btnRefresh.setEnabled(true);
                         }
                     });
 
@@ -423,6 +457,14 @@ public class DiscoveredDevice extends Fragment{
                     else {
                         cf.showSnackBar(getView(), "'" + device.getName() + "' did not unpair.", Snackbar.LENGTH_SHORT);
                     }
+
+                    // Stop Bluetooth scanning, if still running
+                    Log.i(TAG, "Stop Bluetooth scanning");
+                    //getContext().unregisterReceiver(btBroadcastReceiver);
+                    if(btActions.isDiscovering()) {
+                        btActions.cancelDiscovery();
+                    }
+
                 }
             }).start();
 
@@ -515,9 +557,11 @@ public class DiscoveredDevice extends Fragment{
                 displayDiscoveredDevices();
 
                 flRefresh.clearAnimation();
+                Log.i(TAG, "Unregister Bluetooth service");
                 context.unregisterReceiver(btBroadcastReceiver);
 
                 // Enable the Refresh button
+                Log.i(TAG, "Enable Refresh button");
                 btnRefresh.setEnabled(true);
             }
         }
