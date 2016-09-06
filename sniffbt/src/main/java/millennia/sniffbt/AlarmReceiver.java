@@ -23,6 +23,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     Row[] arrPairedDevicesSettings;
     Context context;
     CommonFunctions cf = new CommonFunctions();
+    int intTimeToWaitForDeviceConnectionInSeconds = 15;
 
     // Initialize the variables for Bluetooth Profiles
     BluetoothProfileServiceListener slA2DP;
@@ -54,6 +55,8 @@ public class AlarmReceiver extends BroadcastReceiver {
      * Method to connect to Desired Paired devices.
      */
     private void connectDesiredDevices() {
+        boolean blnIsA2DPDeviceConnected = false, blnIsHSDeviceConnected = false;
+
         Log.i(TAG, "Connecting to Desired Paired devices...");
 
         if(btActions.isBluetoothTurnedOn()) {
@@ -63,9 +66,24 @@ public class AlarmReceiver extends BroadcastReceiver {
                             pairedDeviceSetting.getDeviceAddress().equals(pairedDevice.getAddress())){
                         Log.i(TAG, "Connecting device '" + pairedDevice.getName() + "'...");
 
-                        // Connect the device
-                        actionOnBTDevice("CONNECT", pairedDevice, hs);
-                        actionOnBTDevice("CONNECT", pairedDevice, a2dp);
+                        BluetoothProfile profile = isDeviceConnected(pairedDevice);
+                        if(profile != null) {
+                            if(profile.getClass().getName().toUpperCase().contains("A2DP")) {
+                                blnIsA2DPDeviceConnected = true;
+                            }
+                            else if(profile.getClass().getName().toUpperCase().contains("HS")) {
+                                blnIsHSDeviceConnected = true;
+                            }
+                        }
+
+                        // Connect the device ONLY if no device of the same category is already connected
+                        if(!blnIsA2DPDeviceConnected) {
+                            actionOnBTDevice("CONNECT", pairedDevice, a2dp);
+                        }
+
+                        if(!blnIsHSDeviceConnected){
+                            actionOnBTDevice("CONNECT", pairedDevice, hs);
+                        }
                     }
                 }
             }
@@ -154,15 +172,48 @@ public class AlarmReceiver extends BroadcastReceiver {
             if(connectedA2DPDevices.size() != 0) {
                 blnIsDeviceConnected = true;
             }
+            else {
+                Log.i(TAG, "No A2DP devices are connected");
+            }
         }
 
         if(connectedHSDevices != null) {
             if(connectedHSDevices.size() != 0) {
                 blnIsDeviceConnected = true;
             }
+            else {
+                Log.i(TAG, "No HS devices are connected");
+            }
         }
 
         return blnIsDeviceConnected;
+    }
+
+    /**
+     * Method to check if the specified Bluetooth device is connected or not
+     * @param device - The {@link BluetoothDevice}
+     * @return - {@link BluetoothProfile}
+     */
+    private BluetoothProfile isDeviceConnected(BluetoothDevice device) {
+        BluetoothProfile profile = null;
+
+        if (connectedA2DPDevices != null && connectedA2DPDevices.size() != 0) {
+            for (BluetoothDevice eachBTDevice : connectedA2DPDevices) {
+                if (eachBTDevice.equals(device)) {
+                    profile = a2dp;
+                }
+            }
+        }
+
+        if (connectedHSDevices != null && connectedHSDevices.size() != 0) {
+            for (BluetoothDevice eachBTDevice : connectedHSDevices) {
+                if (eachBTDevice.equals(device)) {
+                    profile = hs;
+                }
+            }
+        }
+
+        return profile;
     }
 
     private class BluetoothProfileServiceListener implements BluetoothProfile.ServiceListener {
@@ -183,11 +234,20 @@ public class AlarmReceiver extends BroadcastReceiver {
             }
 
             if(a2dp != null && hs != null) {
+
+                // Disconnect any existing connected devices
+                if(isAnyDeviceCurrentlyConnected()) {
+                    disconnectUndesiredDevices();
+                }
+
                 // Connect to checked devices
                 connectDesiredDevices();
 
                 // Disconnect from unchecked devices
                 disconnectUndesiredDevices();
+
+                // Wait for n seconds for all Desired devices to get connected
+                cf.sleepForNSeconds(intTimeToWaitForDeviceConnectionInSeconds);
 
                 // If bluetooth is 'already' connected or 'recently' connected, leave bluetooth on, else turn bluetooth off
                 if(!isAnyDeviceCurrentlyConnected()) {
@@ -200,6 +260,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 btActions.getBTAdapter().closeProfileProxy(BluetoothProfile.HEADSET, hs);
                 slA2DP = null;
                 slHS = null;
+
             }
         }
 
