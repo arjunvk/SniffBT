@@ -59,15 +59,15 @@ public class CustomArrayAdapter extends ArrayAdapter<Row> {
                 // Uncheck any devices of the same category
                 if(cb.isChecked()) {
                     for(int iCnt = 0; iCnt < arrCheckBoxes.size(); iCnt++) {
-                        if (rowItems[iCnt].isCBChecked() && !rowItems[iCnt].getDeviceAddress().equals(rowItems[position].getDeviceAddress())) {
-                            if (rowItems[iCnt].getDeviceMajorClass() == rowItems[position].getDeviceMajorClass()) {
-                                arrCheckBoxes.get(iCnt).setChecked(false);
-                                rowItems[iCnt].setCB(false);
-                                notifyDataSetChanged();
-                                cf.showSnackBar(v, rowItems[iCnt].getDeviceName() +
-                                                   " belongs to the same category as " +
-                                                   rowItems[position].getDeviceName(), Snackbar.LENGTH_SHORT);
-                            }
+                        if (rowItems[iCnt].isCBChecked() &&
+                            !rowItems[iCnt].getDeviceAddress().equals(rowItems[position].getDeviceAddress()) &&
+                            rowItems[iCnt].getDeviceMajorClass() == rowItems[position].getDeviceMajorClass()) {
+                            arrCheckBoxes.get(iCnt).setChecked(false);
+                            rowItems[iCnt].setCB(false);
+                            notifyDataSetChanged();
+                            cf.showSnackBar(v, rowItems[iCnt].getDeviceName() +
+                                               " belongs to the same category as " +
+                                               rowItems[position].getDeviceName(), Snackbar.LENGTH_SHORT);
                         }
                     }
                 }
