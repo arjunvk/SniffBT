@@ -1,10 +1,12 @@
 package millennia.sniffbt.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import millennia.sniffbt.CommonFunctions;
+import millennia.sniffbt.ListenBTIntentService;
 import millennia.sniffbt.R;
 
 public class Settings extends Fragment {
@@ -61,6 +64,11 @@ public class Settings extends Fragment {
             @Override
             public void onClick(View v) {
                 cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), 60);
+
+                if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
+                    cf.showSnackBar(v, "SniffBT has been turned OFF", Snackbar.LENGTH_SHORT);
+                    turnOffSniffBT();
+                }
             }
         });
 
@@ -68,6 +76,11 @@ public class Settings extends Fragment {
             @Override
             public void onClick(View v) {
                 cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), 120);
+
+                if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
+                    cf.showSnackBar(v, "SniffBT has been turned OFF", Snackbar.LENGTH_SHORT);
+                    turnOffSniffBT();
+                }
             }
         });
     }
@@ -99,6 +112,15 @@ public class Settings extends Fragment {
                 }
             }
         }
+    }
+
+    private void turnOffSniffBT() {
+        final FloatingActionButton mSniffBT = (FloatingActionButton) getView().findViewById(R.id.sniffBT);
+        Intent intentListenBT = new Intent(getContext(), ListenBTIntentService.class);
+
+        // Turn off Sniff BT
+        Log.i(TAG, "Starting Intent Service to stop SniffBT scheduler...");
+        getContext().startService(intentListenBT);
     }
 
 }
