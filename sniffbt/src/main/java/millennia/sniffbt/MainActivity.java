@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import millennia.sniffbt.SniffBTIntro.SniffBTIntro;
 import millennia.sniffbt.fragment.DiscoveredDevice;
 import millennia.sniffbt.fragment.PairedDevice;
 import millennia.sniffbt.fragment.Settings;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity{
 
     // Initialize variables
     final String TAG = "Main Activity";
+    ViewPager mViewPager = null;
     final int PAIRED_DEVICE_POSITION = 0;
     final int DISCOVERED_DEVICE_POSITION = 1;
     final int SETTINGS_POSITION = 2;
@@ -53,8 +56,12 @@ public class MainActivity extends AppCompatActivity{
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "Begin render of Main Activity...");
         super.onCreate(savedInstanceState);
+
+        // Display Intro fragment ,if invoked for the first time
+        displayIntroFragment(false);
+
+        Log.i(TAG, "Begin render of Main Activity...");
         setContentView(R.layout.activity_main);
 
         // Define variables
@@ -62,24 +69,31 @@ public class MainActivity extends AppCompatActivity{
         intentListenBT = new Intent(getApplicationContext(), ListenBTIntentService.class);
         final FloatingActionButton mSniffBT = (FloatingActionButton) findViewById(R.id.sniffBT);
         final FloatingActionButton mBTOnOrOff = (FloatingActionButton) findViewById(R.id.btOnOff);
+        final FloatingActionButton mSniffBTTutorial = (FloatingActionButton) findViewById(R.id.sniffBTTutorial);
 
         Log.i(TAG, "Setting up 3 fragments on Main Activity...");
-        final ViewPager mViewPager = (ViewPager) findViewById(R.id.viewpager);
+        mViewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(mViewPager);
         
         Log.i(TAG, "Setting up tabs on Main Activity...");
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        //getSupportFragmentManager().getFragments()
-        //discFragment = (DiscoveredDevice) getSupportFragmentManager().findFragmentByTag(getFragmentTag(mViewPager.getId(),DISCOVERED_DEVICE_POSITION));
-
         vTabPair = getLayoutInflater().inflate(R.layout.custom_tab, null);
         vTabSearch = getLayoutInflater().inflate(R.layout.custom_tab, null);
         vTabSettings = getLayoutInflater().inflate(R.layout.custom_tab, null);
 
         Log.i(TAG, "Setting tab icons ...");
-        setupTabIcons(0);
+        int intDefaultTabPosition = 0;
+
+        // Remove SniffBT tutorial flag, if present
+        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial_From_Settings), String.class) != null) {
+            if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial_From_Settings), String.class)).equalsIgnoreCase("true")) {
+                cf.removeSharedPreferencesKey(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial_From_Settings));
+            }
+        }
+
+        setupTabIcons(intDefaultTabPosition);
 
         // Setting the Sniff BT icon
         if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class) != null) {
@@ -94,15 +108,16 @@ public class MainActivity extends AppCompatActivity{
             mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
             cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), "OFF");
         }
+        mSniffBTTutorial.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_tutorial));
 
         mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
                 setupTabIcons(tab.getPosition());
+
                 switch (tab.getPosition()) {
                     case PAIRED_DEVICE_POSITION:
-                        mSniffBT.show();
                         if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class) != null) {
                             if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
                                 mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
@@ -114,7 +129,10 @@ public class MainActivity extends AppCompatActivity{
                         else {
                             mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
                         }
+                        mSniffBTTutorial.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_tutorial));
+                        mSniffBT.show();
                         mBTOnOrOff.hide();
+                        mSniffBTTutorial.show();
                         break;
 
                     case DISCOVERED_DEVICE_POSITION:
@@ -126,11 +144,13 @@ public class MainActivity extends AppCompatActivity{
                             mBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_bt_off));
                         }
                         mBTOnOrOff.show();
+                        mSniffBTTutorial.hide();
                         break;
 
                     case SETTINGS_POSITION:
                         mSniffBT.hide();
                         mBTOnOrOff.hide();
+                        mSniffBTTutorial.hide();
                         break;
                 }
             }
@@ -142,7 +162,30 @@ public class MainActivity extends AppCompatActivity{
             public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-        mSniffBT.show();
+        switch (intDefaultTabPosition) {
+            case PAIRED_DEVICE_POSITION:
+                mSniffBT.show();
+                mBTOnOrOff.hide();
+                mSniffBTTutorial.show();
+                break;
+
+            case DISCOVERED_DEVICE_POSITION:
+                mSniffBT.hide();
+                mBTOnOrOff.show();
+                mSniffBTTutorial.hide();
+                break;
+
+            case SETTINGS_POSITION:
+                mSniffBT.hide();
+                mBTOnOrOff.hide();
+                mSniffBTTutorial.hide();
+                break;
+
+            default:
+                mSniffBT.show();
+                mBTOnOrOff.hide();
+                mSniffBTTutorial.hide();
+        }
 
         mSniffBT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,8 +193,7 @@ public class MainActivity extends AppCompatActivity{
                 if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), int.class) != null) {
                     if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
                         // Turn on Sniff BT
-                        arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs,
-                                getString(R.string.SH_PREF_Paired_Devices), Row[].class);
+                        arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class);
 
                         // Start service to listen to BT
                         Log.i(TAG, "Starting Intent Service to start SniffBT scheduler...");
@@ -175,8 +217,6 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-        mBTOnOrOff.hide();
-
         mBTOnOrOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,6 +232,25 @@ public class MainActivity extends AppCompatActivity{
                 discFragment.refreshFragment(true);
             }
         });
+
+        mSniffBTTutorial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Display Intro fragment
+                cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial_From_Settings), "true");
+                displayIntroFragment(true);
+            }
+        });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -230,9 +289,9 @@ public class MainActivity extends AppCompatActivity{
                 break;
         }
 
-        mTabLayout.getTabAt(0).setCustomView(vTabPair);
-        mTabLayout.getTabAt(1).setCustomView(vTabSearch);
-        mTabLayout.getTabAt(2).setCustomView(vTabSettings);
+        mTabLayout.getTabAt(PAIRED_DEVICE_POSITION).setCustomView(vTabPair);
+        mTabLayout.getTabAt(DISCOVERED_DEVICE_POSITION).setCustomView(vTabSearch);
+        mTabLayout.getTabAt(SETTINGS_POSITION).setCustomView(vTabSettings);
     }
 
     private void setupViewPager(ViewPager mViewPager) {
@@ -242,10 +301,6 @@ public class MainActivity extends AppCompatActivity{
         mViewPagerAdapter.addFragment(new Settings(), "");
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.setAdapter(mViewPagerAdapter);
-    }
-
-    private String getFragmentTag(int viewPagerId, int fragmentPosition) {
-        return "android:switcher:" + viewPagerId + ":" + fragmentPosition;
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -295,5 +350,36 @@ public class MainActivity extends AppCompatActivity{
             }
             return createdFragment;
         }
+    }
+
+    private void displayIntroFragment(final boolean blnIsInvokedFromSettingsTab) {
+        // Display Intro fragment ,if invoked for the first time
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //  Initialize SharedPreferences
+                SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
+                //  Create a new boolean and preference and set it to true
+                boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+
+                //  If the activity has never started before...
+                if (isFirstStart || blnIsInvokedFromSettingsTab) {
+                    //  Launch app intro
+                    Intent i = new Intent(MainActivity.this, SniffBTIntro.class);
+                    startActivity(i);
+
+                    //  Make a new preferences editor
+                    SharedPreferences.Editor e = getPrefs.edit();
+
+                    //  Edit preference to make it false because we don't want this to run again
+                    e.putBoolean("firstStart", false);
+
+                    //  Apply changes
+                    e.apply();
+                }
+            }
+        });
+        t.start();
     }
 }

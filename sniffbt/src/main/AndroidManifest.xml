@@ -27,6 +27,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".SniffBTIntro.SniffBTIntro"
+            android:label="@string/app_tutorial" />
+
         <service
             android:name=".ListenBTIntentService"
             android:exported="false" />

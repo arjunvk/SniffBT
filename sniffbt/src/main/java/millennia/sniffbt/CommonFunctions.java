@@ -98,6 +98,17 @@ public class CommonFunctions {
     }
 
     /**
+     * Method to remove a key from the Shared Preferences object
+     * @param  mPref - the {@link SharedPreferences} object
+     * @param strReferenceName - The {@link String} reference name
+     */
+    public void removeSharedPreferencesKey(SharedPreferences mPref, String strReferenceName) {
+        SharedPreferences.Editor prefEditor = mPref.edit();
+        prefEditor.remove(strReferenceName);
+        prefEditor.apply();
+    }
+
+    /**
      * Method to display a SnackBar message
      * @param strMsg - The {@link String} message to be displayed
      */
