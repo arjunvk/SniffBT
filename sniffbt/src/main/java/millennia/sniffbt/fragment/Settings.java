@@ -34,7 +34,7 @@ public class Settings extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.i(TAG, "Begin render of Discovered Device fragment...");
+        Log.i(TAG, "Begin render of Settings fragment...");
         super.onCreate(savedInstanceState);
 
         // Define variables
@@ -115,7 +115,6 @@ public class Settings extends Fragment {
     }
 
     private void turnOffSniffBT() {
-        final FloatingActionButton mSniffBT = (FloatingActionButton) getView().findViewById(R.id.sniffBT);
         Intent intentListenBT = new Intent(getContext(), ListenBTIntentService.class);
 
         // Turn off Sniff BT
