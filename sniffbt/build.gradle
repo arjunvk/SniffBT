@@ -32,5 +32,4 @@ dependencies {
     compile 'com.android.support:support-v4:23.4.0'
     compile 'com.android.support:design:23.4.0'
     compile 'com.github.ybq:Android-SpinKit:1.0.4'
-    compile 'com.github.iammert:MaterialIntroView:1.5.2'
 }

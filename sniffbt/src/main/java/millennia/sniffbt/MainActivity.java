@@ -21,11 +21,6 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import co.mobiwise.materialintro.animation.MaterialIntroListener;
-import co.mobiwise.materialintro.prefs.PreferencesManager;
-import co.mobiwise.materialintro.shape.Focus;
-import co.mobiwise.materialintro.shape.FocusGravity;
-import co.mobiwise.materialintro.view.MaterialIntroView;
 import millennia.sniffbt.fragment.DiscoveredDevice;
 import millennia.sniffbt.fragment.PairedDevice;
 import millennia.sniffbt.fragment.Settings;
@@ -84,13 +79,13 @@ public class MainActivity extends AppCompatActivity{
         vTabSearch = getLayoutInflater().inflate(R.layout.custom_tab, null);
         vTabSettings = getLayoutInflater().inflate(R.layout.custom_tab, null);
 
-        Log.i(TAG, "Setting tab icons ...");
+        Log.i(TAG, "Setting tab icons...");
         int intDefaultTabPosition = 0;
 
         // Remove SniffBT tutorial flag, if present
-        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial_From_Settings), String.class) != null) {
-            if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial_From_Settings), String.class)).equalsIgnoreCase("true")) {
-                cf.removeSharedPreferencesKey(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial_From_Settings));
+        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial), String.class) != null) {
+            if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial), String.class)).equalsIgnoreCase("true")) {
+                cf.removeSharedPreferencesKey(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial));
             }
         }
 
@@ -238,7 +233,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 // Display Intro fragment
-                cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial_From_Settings), "true");
+                cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial), "true");
 
                 invokeIntroTutorial(true);
             }
@@ -370,13 +365,7 @@ public class MainActivity extends AppCompatActivity{
             btActions.turnOffBluetooth();
 
             // Launch app intro
-            // Reset the preferences before and after the Intro tutorial
-            new PreferencesManager(getApplicationContext()).resetAll();
-
-            // Initiate the sequence of Intro tutorial frames
-            showIntroForPairedTab();
-
-            new PreferencesManager(getApplicationContext()).resetAll();
+            // ADD CODE FOR THE NEW INTRO TUTORIAL
 
             //  Make a new preferences editor
             SharedPreferences.Editor e = getPrefs.edit();
@@ -387,234 +376,5 @@ public class MainActivity extends AppCompatActivity{
             //  Apply changes
             e.apply();
         }
-    }
-
-    private void showIntroForPairedTab() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        showIntroForPairedTabSettings();
-                    }
-                })
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .setInfoText("This tab lets you configure the SniffBT devices. You can also turn on/off SniffBT from here")
-                .setTarget(vTabPair)
-                .setUsageId("PairedTab")
-                .show();
-    }
-
-    private void showIntroForPairedTabSettings() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        showIntroForSniffBTIcon();
-                    }
-                })
-                .enableDotAnimation(true)
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .setInfoText("This section lets you selectively decide which Paired device connects to your phone")
-                .setTarget(findViewById(R.id.swipePairedBTDevicesRefresh))
-                .setUsageId("PairedTabSettings")
-                .show();
-    }
-
-    private void showIntroForSniffBTIcon() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        mViewPager.setCurrentItem(DISCOVERED_DEVICE_POSITION);
-                        showIntroForDiscoveredTab();
-                    }
-                })
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .setInfoText("Click here to turn SniffBT On/Off")
-                .setTarget(findViewById(R.id.sniffBT))
-                .setUsageId("SniffBTIcon")
-                .show();
-    }
-
-    private void showIntroForDiscoveredTab() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        showIntroForBluetoothIconTurnOn();
-                    }
-                })
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .setInfoText("This tab lets you Pair and Unpair devices.")
-                .setTarget(vTabSearch)
-                .setUsageId("DiscoveredTab")
-                .show();
-    }
-
-    private void showIntroForBluetoothIconTurnOn() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        showIntroForPairedDevicesSettings();
-                    }
-                })
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .performClick(true)
-                .setInfoText("Click here to turn Bluetooth On")
-                .setTarget(findViewById(R.id.btOnOff))
-                .setUsageId("BluetoothIcon")
-                .show();
-    }
-
-    private void showIntroForPairedDevicesSettings() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        showIntroForDiscoveredDevicesSettings();
-                    }
-                })
-                .enableDotAnimation(true)
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .setInfoText("This section shows the Paired devices.")
-                .setTarget(findViewById(R.id.rlPairedDevice))
-                .setUsageId("PairedDevicesSettings")
-                .show();
-    }
-
-    private void showIntroForDiscoveredDevicesSettings() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        showIntroForPairUnpairDevices();
-                    }
-                })
-                .enableDotAnimation(true)
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .setInfoText("This section shows the Discovered devices.")
-                .setTarget(findViewById(R.id.rlDiscoveredDevice))
-                .setUsageId("DiscoveredDevicesSettings")
-                .show();
-    }
-
-    private void showIntroForPairUnpairDevices() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        showIntroForBluetoothIconTurnOff();
-                    }
-                })
-                .enableDotAnimation(true)
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .setInfoText("Use the Up and Down buttons to Pair and Unpair Bluetooth devices respectively.")
-                .setTarget(findViewById(R.id.llPairUnpair))
-                .setUsageId("PairUnpair")
-                .show();
-    }
-
-    private void showIntroForBluetoothIconTurnOff() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        mViewPager.setCurrentItem(SETTINGS_POSITION);
-                        showIntroForSettingsTab();
-                    }
-                })
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .performClick(true)
-                .setInfoText("Click here to turn Bluetooth Off")
-                .setTarget(findViewById(R.id.btOnOff))
-                .setUsageId("BluetoothIcon")
-                .show();
-    }
-
-    private void showIntroForSettingsTab() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        showIntroForFreqOfScanSettings();
-                    }
-                })
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .setInfoText("This tab lets you set the frequency at which SniffBT searches for known devices.")
-                .setTarget(vTabSettings)
-                .setUsageId("SettingsTab")
-                .show();
-    }
-
-    private void showIntroForFreqOfScanSettings() {
-        new MaterialIntroView.Builder(MainActivity.this)
-                .setListener(new MaterialIntroListener() {
-                    @Override
-                    public void onUserClicked(String materialIntroViewId) {
-                        new PreferencesManager(getApplicationContext()).resetAll();
-                        mViewPager.setCurrentItem(PAIRED_DEVICE_POSITION);
-                    }
-                })
-                .enableDotAnimation(true)
-                .enableIcon(false)
-                .setFocusGravity(FocusGravity.CENTER)
-                .setFocusType(Focus.MINIMUM)
-                .setDelayMillis(200)
-                .enableFadeAnimation(true)
-                .setInfoText("Set the Frequency using these radio buttons.")
-                .setTarget(findViewById(R.id.freq_of_scan))
-                .setUsageId("FreqOfScanSettings")
-                .show();
     }
 }

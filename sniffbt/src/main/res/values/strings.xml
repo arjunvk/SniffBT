@@ -11,7 +11,7 @@
     <string name="SH_PREF_Paired_Devices">PairedDevices</string>
     <string name="SH_PREF_Scan_Frequency_In_Seconds">ScanFrequency</string>
     <string name="SH_PREF_Sniff_BT_OnOff">SniffBTOnOff</string>
-    <string name="SH_PREF_Sniff_BT_Tutorial_From_Settings">SniffBT_Tutorial_From_Settings</string>
+    <string name="SH_PREF_Sniff_BT_Tutorial">SniffBT_Tutorial</string>
 
     <string name="suggest_BT_On">Please turn on Bluetooth to view Paired and Available devices</string>
 
