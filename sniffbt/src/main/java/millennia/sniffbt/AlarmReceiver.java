@@ -123,7 +123,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             Class<?> c2 = Class.forName("android.os.ServiceManager");
             Method m2 = c2.getDeclaredMethod("getService", String.class);
             IBinder b = (IBinder) m2.invoke(c2.newInstance(), "bluetooth_a2dp");
-            if (b == null) {
+            //if (b == null) {
                 // For Android 4.2 Above Devices
                 try {
                     if(strAction.equalsIgnoreCase("CONNECT")) {
@@ -138,8 +138,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else {
+            //}
+            //else {
                 // For Android below 4.2 devices
                 // RUNS ONLY FOR A2DP
                 Class<?> c3 = Class.forName("android.bluetooth.IBluetoothA2dp");
@@ -154,7 +154,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 else if(strAction.equalsIgnoreCase("DISCONNECT")) {
                     a2dp.disconnect(device);
                 }
-            }
+            //}
         }
         catch (Exception e) {
             Log.i(TAG,e.toString());
