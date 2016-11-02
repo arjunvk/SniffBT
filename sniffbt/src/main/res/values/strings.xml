@@ -27,4 +27,8 @@
     <string name="app_shared_pref_filename">millennia.sniffbt.globalsharedpreferences</string>
     <string name="refresh">Refresh</string>
     <string name="paired_checkboxes">Paired Checkboxes</string>
+    
+    <!-- Slide 1 values -->
+    <string name="slide1_title">Welcome to SniffBT</string>
+    <string name="slide1_description">SniffBT lets you handle Bluetooth connections with external devices. SniffBT also manages day-to-day Bluetooth connectivity with your home and office devices.</string>
 </resources>

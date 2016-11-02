@@ -27,6 +27,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".IntroTutorialActivity"
+            android:theme="@style/Theme.Intro"/>
+
         <service
             android:name=".ListenBTIntentService"
             android:exported="false" />

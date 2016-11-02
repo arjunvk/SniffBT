@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity{
         }
         mSniffBTTutorial.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_tutorial));
 
-        mTabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        mTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager.setCurrentItem(tab.getPosition());
@@ -365,7 +365,8 @@ public class MainActivity extends AppCompatActivity{
             btActions.turnOffBluetooth();
 
             // Launch app intro
-            // ADD CODE FOR THE NEW INTRO TUTORIAL
+            Intent i = new Intent(MainActivity.this, IntroTutorialActivity.class);
+            startActivity(i);
 
             //  Make a new preferences editor
             SharedPreferences.Editor e = getPrefs.edit();

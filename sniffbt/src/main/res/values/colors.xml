@@ -9,4 +9,7 @@
     <color name="deviceList">#E0E2E1</color>
     <color name="list_item_selected">#666666</color>
     <color name="progress_bar_rotation">#006064</color>
+
+    <!-- Slide 1 values -->
+    <color name="slide1_background">#039BE6</color>
 </resources>
