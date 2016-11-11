@@ -46,11 +46,11 @@
     <string name="slide4_description">Use this tab to check (or uncheck) devices that SniffBT should automatically connect to (or disconnect), when they become available.</string>
 
     <!-- Slide 5 values -->
-    <string name="slide5_title">Turn On SniffBT</string>
-    <string name="slide5_description">Hit the SniffBT button and relax</string>
+    <string name="slide5_title">Intelligent Design</string>
+    <string name="slide5_description">If a Bluetooth device has been checked, SniffBT automatically turns on Bluetooth on your phone when that Bluetooth device becomes available. SniffBT also takes care of disconnecting a device, if unchecked.</string>
 
     <!-- Slide 6 values -->
-    <string name="slide6_title">Intelligent Design</string>
-    <string name="slide6_description">If a Bluetooth device has been checked, SniffBT automatically turns on Bluetooth on your phone when that Bluetooth device becomes available. SniffBT also takes care of disconnecting a device, if unchecked.</string>
+    <string name="slide6_title">Turn On SniffBT</string>
+    <string name="slide6_description">Hit the SniffBT button and relax</string>
 
 </resources>
