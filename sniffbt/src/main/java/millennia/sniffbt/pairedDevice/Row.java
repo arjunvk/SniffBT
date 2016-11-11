@@ -19,6 +19,12 @@ public class Row implements Serializable {
         this.intBluetoothMajorClass = device.getBluetoothClass().getMajorDeviceClass();
     }
 
+    // Used for populating the Simulator
+    public Row(String deviceName, boolean blnCBChecked) {
+        this.name = deviceName;
+        this.blnIsCBChecked = blnCBChecked;
+    }
+
     public String getDeviceAddress() { return this.address;}
 
     public void setCB(boolean blnCBChecked) {

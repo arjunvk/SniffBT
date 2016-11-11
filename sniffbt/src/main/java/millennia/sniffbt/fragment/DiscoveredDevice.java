@@ -193,37 +193,59 @@ public class DiscoveredDevice extends Fragment{
 
             blnIsFragmentLoaded = true;
 
-            // Refresh the Discoverable devices if Bluetooth is on
-            if(btActions.isBluetoothTurnedOn()) {
-                Log.i(TAG, "Bluetooth is turned on. Display all objects on fragment");
+            if(btActions.isBluetoothSupported()) {
+                // Refresh the Discoverable devices if Bluetooth is on
+                if(btActions.isBluetoothTurnedOn()) {
+                    Log.i(TAG, "Bluetooth is turned on. Display all objects on fragment");
 
-                hideUnhideLists(View.VISIBLE);
-                tvSuggestBTOn.setVisibility(View.GONE);
-                pbLoading.setVisibility(View.GONE); // CAN BE REMOVED AFTER UPDATING XML
+                    hideUnhideLists(View.VISIBLE);
+                    tvSuggestBTOn.setVisibility(View.GONE);
+                    pbLoading.setVisibility(View.GONE); // CAN BE REMOVED AFTER UPDATING XML
 
-                // Clear both the lists
-                Log.i(TAG, "Clearing both lists");
-                btDiscListArrayAdapter.clear();
-                lvDiscoveredList.setAdapter(btDiscListArrayAdapter);
+                    // Clear both the lists
+                    Log.i(TAG, "Clearing both lists");
+                    btDiscListArrayAdapter.clear();
+                    lvDiscoveredList.setAdapter(btDiscListArrayAdapter);
 
-                btPairedListArrayAdapter.clear();
-                lvPairedDevicesList.setAdapter(btPairedListArrayAdapter);
+                    btPairedListArrayAdapter.clear();
+                    lvPairedDevicesList.setAdapter(btPairedListArrayAdapter);
 
-                listPairedBTDevices();
-                strDiscoveredListItemSelected = "";
+                    listPairedBTDevices();
+                    strDiscoveredListItemSelected = "";
 
-                refreshDiscoveredDevices();
+                    refreshDiscoveredDevices();
 
-                fabBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_action_bt_on));
+                    fabBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_action_bt_on));
+                }
+                else {
+                    Log.i(TAG, "Bluetooth is turned off. Hiding all objects on this fragment");
+
+                    hideUnhideLists(View.GONE);
+                    tvSuggestBTOn.setVisibility(View.VISIBLE);
+                    pbLoading.setVisibility(View.GONE); // CAN BE REMOVED AFTER UPDATING XML
+
+                    fabBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_action_bt_off));
+                }
             }
             else {
-                Log.i(TAG, "Bluetooth is turned off. Hiding all objects on this fragment");
+                // Used for populating the Simulator
+                hideUnhideLists(View.VISIBLE);
+                tvSuggestBTOn.setVisibility(View.GONE);
+                pbLoading.setVisibility(View.GONE);
 
-                hideUnhideLists(View.GONE);
-                tvSuggestBTOn.setVisibility(View.VISIBLE);
-                pbLoading.setVisibility(View.GONE); // CAN BE REMOVED AFTER UPDATING XML
+                btPairedListArrayAdapter.clear();
+                btPairedListArrayAdapter.add("Jyothi's headset");
+                btPairedListArrayAdapter.add("Arjun's Laptop");
+                btPairedListArrayAdapter.add("Ashwin's handsfree");
+                btPairedListArrayAdapter.add("Tomsung Soundbar");
+                lvPairedDevicesList.setAdapter(btPairedListArrayAdapter);
 
-                fabBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_action_bt_off));
+                btDiscListArrayAdapter.clear();
+                btDiscListArrayAdapter.add("MB Bluetooth");
+                btDiscListArrayAdapter.add("BT Dragon");
+                lvDiscoveredList.setAdapter(btDiscListArrayAdapter);
+
+                fabBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_action_bt_on));
             }
         }
         else {

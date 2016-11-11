@@ -85,6 +85,20 @@ public class PairedDevice extends Fragment implements SniffBTInterface {
                 );
             }
         }
+        else {
+            arrPairedDevicesList = new Row[6];
+            arrPairedDevicesList[0] = new Row("Jyothi's headset", false);
+            arrPairedDevicesList[1] = new Row("Arjun's Laptop", true);
+            arrPairedDevicesList[2] = new Row("Ashwin's handsfree", false);
+            arrPairedDevicesList[3] = new Row("Tomsung Soundbar", true);
+            arrPairedDevicesList[4] = new Row("Bluetooth Speaker", false);
+            arrPairedDevicesList[5] = new Row("Pony TV", false);
+
+            pairedDevicesCustomAdapter = new CustomArrayAdapter(this, this.getContext(), arrPairedDevicesList);
+
+            lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
+            lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
+        }
     }
 
     /**
