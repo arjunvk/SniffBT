@@ -28,7 +28,6 @@
             android:orientation="horizontal"
             android:id="@+id/freq_of_scan"
             android:layout_marginTop="@dimen/settings_default_entity_distance"
-            android:checkedButton="@+id/rb_opt1"
             android:layout_weight="2">
 
             <RadioButton
