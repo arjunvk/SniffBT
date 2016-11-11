@@ -242,7 +242,8 @@ public class DiscoveredDevice extends Fragment{
 
                 btDiscListArrayAdapter.clear();
                 btDiscListArrayAdapter.add("MB Bluetooth");
-                btDiscListArrayAdapter.add("BT Dragon");
+                btDiscListArrayAdapter.add("Jon Snow's Arrow");
+                btDiscListArrayAdapter.add("Khaleesi's Dragon");
                 lvDiscoveredList.setAdapter(btDiscListArrayAdapter);
 
                 fabBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_action_bt_on));

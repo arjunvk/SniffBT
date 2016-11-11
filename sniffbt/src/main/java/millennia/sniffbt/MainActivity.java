@@ -82,11 +82,8 @@ public class MainActivity extends AppCompatActivity{
         Log.i(TAG, "Setting tab icons...");
         int intDefaultTabPosition = 0;
 
-        // Remove SniffBT tutorial flag, if present
-        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial), String.class) != null) {
-            if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial), String.class)).equalsIgnoreCase("true")) {
-                cf.removeSharedPreferencesKey(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial));
-            }
+        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_SniffBT_Tutorial_FirstStart), String.class) == null) {
+            cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_SniffBT_Tutorial_FirstStart), "true");
         }
 
         setupTabIcons(intDefaultTabPosition);
@@ -234,9 +231,6 @@ public class MainActivity extends AppCompatActivity{
         mSniffBTTutorial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Display Intro fragment
-                cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_Tutorial), "true");
-
                 invokeIntroTutorial(true);
             }
         });
@@ -355,11 +349,11 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void invokeIntroTutorial(boolean blnIsInvokedFromPairTab) {
-        //  Initialize SharedPreferences
-        SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean isFirstStart = false;
 
-        //  Create a new boolean and preference and set it to true
-        boolean isFirstStart = getPrefs.getBoolean("firstStart", true);
+        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_SniffBT_Tutorial_FirstStart), String.class) != null) {
+            isFirstStart = ((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_SniffBT_Tutorial_FirstStart), String.class)).equalsIgnoreCase("true");
+        }
 
         //  If the activity has never started before...
         if (isFirstStart || blnIsInvokedFromPairTab) {
@@ -370,14 +364,8 @@ public class MainActivity extends AppCompatActivity{
             Intent i = new Intent(MainActivity.this, IntroTutorialActivity.class);
             startActivity(i);
 
-            //  Make a new preferences editor
-            SharedPreferences.Editor e = getPrefs.edit();
-
             //  Edit preference to make it false because we don't want this to run again
-            e.putBoolean("firstStart", false);
-
-            //  Apply changes
-            e.apply();
+            cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_SniffBT_Tutorial_FirstStart), "false");
         }
     }
 }

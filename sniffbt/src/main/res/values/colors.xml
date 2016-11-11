@@ -15,5 +15,6 @@
     <color name="slide2_background">#FFEB3C</color>
     <color name="slide3_background">#E64A19</color>
     <color name="slide4_background">#d942f4</color>
-    <color name="slide5_background">#0206e8</color>
+    <color name="slide5_background">#015666</color>
+    <color name="slide6_background">#0206e8</color>
 </resources>

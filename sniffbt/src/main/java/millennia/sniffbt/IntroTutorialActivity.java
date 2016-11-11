@@ -17,8 +17,7 @@ public class IntroTutorialActivity extends IntroActivity{
 
         /* Enable/disable fullscreen */
         setFullscreen(true);
-        //setButtonBackVisible(false);
-        //setButtonNextVisible(false);
+        setButtonBackVisible(false);
         setButtonCtaVisible(true);
         setButtonCtaTintMode(BUTTON_CTA_TINT_MODE_TEXT);
         TypefaceSpan labelSpan = new TypefaceSpan(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? "sans-serif-medium" : "sans serif");
@@ -42,6 +41,7 @@ public class IntroTutorialActivity extends IntroActivity{
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.slide2_title)
                 .description(R.string.slide2_description)
+                .image(R.drawable.slide_2)
                 .background(R.color.slide2_background)
                 .build());
 
@@ -57,6 +57,7 @@ public class IntroTutorialActivity extends IntroActivity{
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.slide4_title)
                 .description(R.string.slide4_description)
+                .image(R.drawable.slide_4)
                 .background(R.color.slide4_background)
                 .build());
 
@@ -65,6 +66,13 @@ public class IntroTutorialActivity extends IntroActivity{
                 .title(R.string.slide5_title)
                 .description(R.string.slide5_description)
                 .background(R.color.slide5_background)
+                .build());
+
+        // Slide #6
+        addSlide(new SimpleSlide.Builder()
+                .title(R.string.slide6_title)
+                .description(R.string.slide6_description)
+                .background(R.color.slide6_background)
                 .build());
     }
 }

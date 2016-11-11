@@ -11,7 +11,7 @@
     <string name="SH_PREF_Paired_Devices">PairedDevices</string>
     <string name="SH_PREF_Scan_Frequency_In_Seconds">ScanFrequency</string>
     <string name="SH_PREF_Sniff_BT_OnOff">SniffBTOnOff</string>
-    <string name="SH_PREF_Sniff_BT_Tutorial">SniffBT_Tutorial</string>
+    <string name="SH_PREF_SniffBT_Tutorial_FirstStart">SniffBT_Tutorial_FirstStart</string>
 
     <string name="suggest_BT_On">Please turn on Bluetooth to view Paired and Available devices</string>
 
@@ -38,7 +38,7 @@
     <string name="slide2_description">Use this tab to Pair/Unpair Bluetooth devices to your phone.</string>
 
     <!-- Slide 3 values -->
-    <string name="slide3_title">Time your Search</string>
+    <string name="slide3_title">Set Search Frequency</string>
     <string name="slide3_description">Use this tab to set the frequency at which SniffBt searches for known Bluetooth devices.</string>
 
     <!-- Slide 4 values -->
@@ -46,7 +46,11 @@
     <string name="slide4_description">Use this tab to check (or uncheck) devices that SniffBT should automatically connect to (or disconnect), when they become available.</string>
 
     <!-- Slide 5 values -->
-    <string name="slide5_title">Intelligent Design</string>
-    <string name="slide5_description">If a Bluetooth device has been checked, SniffBT automatically turns on Bluetooth on your phone when that Bluetooth device becomes available. SniffBT also takes care of disconnecting a device, if unchecked.</string>
+    <string name="slide5_title">Turn On SniffBT</string>
+    <string name="slide5_description">Hit the SniffBT button and relax</string>
+
+    <!-- Slide 6 values -->
+    <string name="slide6_title">Intelligent Design</string>
+    <string name="slide6_description">If a Bluetooth device has been checked, SniffBT automatically turns on Bluetooth on your phone when that Bluetooth device becomes available. SniffBT also takes care of disconnecting a device, if unchecked.</string>
 
 </resources>
