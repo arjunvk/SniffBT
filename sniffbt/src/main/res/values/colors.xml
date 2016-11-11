@@ -12,4 +12,8 @@
 
     <!-- Slide 1 values -->
     <color name="slide1_background">#039BE6</color>
+    <color name="slide2_background">#FFEB3C</color>
+    <color name="slide3_background">#E64A19</color>
+    <color name="slide4_background">#d942f4</color>
+    <color name="slide5_background">#0206e8</color>
 </resources>

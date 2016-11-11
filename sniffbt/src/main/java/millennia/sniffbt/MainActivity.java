@@ -183,51 +183,53 @@ public class MainActivity extends AppCompatActivity{
                 mSniffBTTutorial.hide();
         }
 
-        mSniffBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), int.class) != null) {
-                    if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
-                        // Turn on Sniff BT
-                        arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class);
+        if(btActions.isBluetoothSupported()) {
+            mSniffBT.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Scan_Frequency_In_Seconds), int.class) != null) {
+                        if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
+                            // Turn on Sniff BT
+                            arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class);
 
-                        // Start service to listen to BT
-                        Log.i(TAG, "Starting Intent Service to start SniffBT scheduler...");
-                        intentListenBT.putExtra("PairedDevicesList", cf.serialize(arrPairedDevicesList));
-                        getApplicationContext().startService(intentListenBT);
-                        mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_on));
-                        cf.showSnackBar(v, "SniffBT has been turned ON", Snackbar.LENGTH_SHORT);
+                            // Start service to listen to BT
+                            Log.i(TAG, "Starting Intent Service to start SniffBT scheduler...");
+                            intentListenBT.putExtra("PairedDevicesList", cf.serialize(arrPairedDevicesList));
+                            getApplicationContext().startService(intentListenBT);
+                            mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_on));
+                            cf.showSnackBar(v, "SniffBT has been turned ON", Snackbar.LENGTH_SHORT);
+                        }
+                        else if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
+                            // Turn off Sniff BT
+                            Log.i(TAG, "Starting Intent Service to stop SniffBT scheduler...");
+                            getApplicationContext().startService(intentListenBT);
+
+                            mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
+                            cf.showSnackBar(v, "SniffBT has been turned OFF", Snackbar.LENGTH_SHORT);
+                        }
                     }
-                    else if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
-                        // Turn off Sniff BT
-                        Log.i(TAG, "Starting Intent Service to stop SniffBT scheduler...");
-                        getApplicationContext().startService(intentListenBT);
-
-                        mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));
-                        cf.showSnackBar(v, "SniffBT has been turned OFF", Snackbar.LENGTH_SHORT);
+                    else {
+                        cf.showSnackBar(v, "Set the frequency of scan", Snackbar.LENGTH_SHORT);
                     }
                 }
-                else {
-                    cf.showSnackBar(v, "Set the frequency of scan", Snackbar.LENGTH_SHORT);
-                }
-            }
-        });
+            });
 
-        mBTOnOrOff.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(btActions.isBluetoothTurnedOn()) {
-                    btActions.turnOffBluetooth();
-                    mBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_bt_off));
-                }
-                else {
-                    btActions.turnOnBluetooth();
-                    mBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_bt_on));
-                }
+            mBTOnOrOff.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(btActions.isBluetoothTurnedOn()) {
+                        btActions.turnOffBluetooth();
+                        mBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_bt_off));
+                    }
+                    else {
+                        btActions.turnOnBluetooth();
+                        mBTOnOrOff.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_bt_on));
+                    }
 
-                discFragment.refreshFragment(true);
-            }
-        });
+                    discFragment.refreshFragment(true);
+                }
+            });
+        }
 
         mSniffBTTutorial.setOnClickListener(new View.OnClickListener() {
             @Override

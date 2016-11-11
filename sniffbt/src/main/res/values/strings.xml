@@ -27,8 +27,26 @@
     <string name="app_shared_pref_filename">millennia.sniffbt.globalsharedpreferences</string>
     <string name="refresh">Refresh</string>
     <string name="paired_checkboxes">Paired Checkboxes</string>
-    
+
+    <string name="intro_tutorial_btn">Get Started</string>
     <!-- Slide 1 values -->
     <string name="slide1_title">Welcome to SniffBT</string>
     <string name="slide1_description">SniffBT lets you handle Bluetooth connections with external devices. SniffBT also manages day-to-day Bluetooth connectivity with your home and office devices.</string>
+
+    <!-- Slide 2 values -->
+    <string name="slide2_title">Manage Devices</string>
+    <string name="slide2_description">Use this tab to Pair/Unpair Bluetooth devices to your phone.</string>
+
+    <!-- Slide 3 values -->
+    <string name="slide3_title">Time your Search</string>
+    <string name="slide3_description">Use this tab to set the frequency at which SniffBt searches for known Bluetooth devices.</string>
+
+    <!-- Slide 4 values -->
+    <string name="slide4_title">Control Connections</string>
+    <string name="slide4_description">Use this tab to check (or uncheck) devices that SniffBT should automatically connect to (or disconnect), when they become available.</string>
+
+    <!-- Slide 5 values -->
+    <string name="slide5_title">Intelligent Design</string>
+    <string name="slide5_description">If a Bluetooth device has been checked, SniffBT automatically turns on Bluetooth on your phone when that Bluetooth device becomes available. SniffBT also takes care of disconnecting a device, if unchecked.</string>
+
 </resources>

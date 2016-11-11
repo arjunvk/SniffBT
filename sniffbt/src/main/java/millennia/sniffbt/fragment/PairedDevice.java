@@ -56,32 +56,34 @@ public class PairedDevice extends Fragment implements SniffBTInterface {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // Display the paired devices on startup
-        Log.i(TAG, "Listing Paired devices...");
-        if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class) != null) {
-            arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs,
-                                           getString(R.string.SH_PREF_Paired_Devices), Row[].class);
-            lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
-            pairedDevicesCustomAdapter = new CustomArrayAdapter(this, this.getContext(), arrPairedDevicesList);
-            lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
-        }
-        else {
-            listPairedBTDevices();
-        }
+        if(btActions.isBluetoothSupported()) {
+            // Display the paired devices on startup
+            Log.i(TAG, "Listing Paired devices...");
+            if(cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class) != null) {
+                arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs,
+                        getString(R.string.SH_PREF_Paired_Devices), Row[].class);
+                lvPairedDevicesList = (ListView) getView().findViewById(R.id.lstPairedBTDevices);
+                pairedDevicesCustomAdapter = new CustomArrayAdapter(this, this.getContext(), arrPairedDevicesList);
+                lvPairedDevicesList.setAdapter(pairedDevicesCustomAdapter);
+            }
+            else {
+                listPairedBTDevices();
+            }
 
-        // Set the method for refreshing list of Paired devices
-        final SwipeRefreshLayout refreshPairedDevices = (SwipeRefreshLayout) getView().findViewById(R.id.swipePairedBTDevicesRefresh);
-        if (refreshPairedDevices != null) {
-            refreshPairedDevices.setOnRefreshListener(
-                    new SwipeRefreshLayout.OnRefreshListener() {
-                        @Override
-                        public void onRefresh() {
-                            Log.i(TAG, "Refreshing Paired devices...");
-                            listPairedBTDevices();
-                            refreshPairedDevices.setRefreshing(false);
+            // Set the method for refreshing list of Paired devices
+            final SwipeRefreshLayout refreshPairedDevices = (SwipeRefreshLayout) getView().findViewById(R.id.swipePairedBTDevicesRefresh);
+            if (refreshPairedDevices != null) {
+                refreshPairedDevices.setOnRefreshListener(
+                        new SwipeRefreshLayout.OnRefreshListener() {
+                            @Override
+                            public void onRefresh() {
+                                Log.i(TAG, "Refreshing Paired devices...");
+                                listPairedBTDevices();
+                                refreshPairedDevices.setRefreshing(false);
+                            }
                         }
-                    }
-            );
+                );
+            }
         }
     }
 

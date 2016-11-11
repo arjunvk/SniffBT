@@ -1,6 +1,11 @@
 package millennia.sniffbt;
 
+import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.TypefaceSpan;
 
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
@@ -8,11 +13,23 @@ import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
 public class IntroTutorialActivity extends IntroActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
 
         /* Enable/disable fullscreen */
         setFullscreen(true);
+        //setButtonBackVisible(false);
+        //setButtonNextVisible(false);
+        setButtonCtaVisible(true);
+        setButtonCtaTintMode(BUTTON_CTA_TINT_MODE_TEXT);
+        TypefaceSpan labelSpan = new TypefaceSpan(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? "sans-serif-medium" : "sans serif");
+        SpannableString label = SpannableString.valueOf(getString(R.string.intro_tutorial_btn));
+        label.setSpan(labelSpan, 0, label.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        setButtonCtaLabel(label);
 
-        super.onCreate(savedInstanceState);
+        setPageScrollDuration(500);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setPageScrollInterpolator(android.R.interpolator.fast_out_slow_in);
+        }
 
         // Slide #1
         addSlide(new SimpleSlide.Builder()
@@ -20,5 +37,34 @@ public class IntroTutorialActivity extends IntroActivity{
                  .description(R.string.slide1_description)
                  .background(R.color.slide1_background)
                  .build());
+
+        // Slide #2
+        addSlide(new SimpleSlide.Builder()
+                .title(R.string.slide2_title)
+                .description(R.string.slide2_description)
+                .background(R.color.slide2_background)
+                .build());
+
+        // Slide #3
+        addSlide(new SimpleSlide.Builder()
+                .title(R.string.slide3_title)
+                .description(R.string.slide3_description)
+                .image(R.drawable.slide_3)
+                .background(R.color.slide3_background)
+                .build());
+
+        // Slide #4
+        addSlide(new SimpleSlide.Builder()
+                .title(R.string.slide4_title)
+                .description(R.string.slide4_description)
+                .background(R.color.slide4_background)
+                .build());
+
+        // Slide #5
+        addSlide(new SimpleSlide.Builder()
+                .title(R.string.slide5_title)
+                .description(R.string.slide5_description)
+                .background(R.color.slide5_background)
+                .build());
     }
 }
