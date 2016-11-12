@@ -1,8 +1,12 @@
 package millennia.sniffbt;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.TypefaceSpan;
@@ -68,16 +72,18 @@ public class IntroTutorialActivity extends IntroActivity{
                 .background(R.color.slide5_background)
                 .build());
 
-        // slide for obtaining permissions
-        addSlide(new SimpleSlide.Builder()
-                .title(R.string.permissions_title)
-                .description(R.string.permissions_description)
-                .background(R.color.permissions_background)
-                .image(R.drawable.location)
-                .permissions(new String[]{
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION})
-                .build());
+        if(!isLocationServicesAvailable(this.getApplicationContext())) {
+            // slide for obtaining permissions
+            addSlide(new SimpleSlide.Builder()
+                    .title(R.string.permissions_title)
+                    .description(R.string.permissions_description)
+                    .background(R.color.permissions_background)
+                    .image(R.drawable.location)
+                    .permissions(new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION})
+                    .build());
+        }
 
         // Slide #6
         addSlide(new SimpleSlide.Builder()
@@ -85,5 +91,25 @@ public class IntroTutorialActivity extends IntroActivity{
                 .description(R.string.slide6_description)
                 .background(R.color.slide6_background)
                 .build());
+    }
+
+    public static boolean isLocationServicesAvailable(Context context) {
+        int locationMode = 0;
+        boolean isAvailable = false;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            isAvailable = (locationMode != Settings.Secure.LOCATION_MODE_OFF);
+        }
+
+        boolean coarsePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+        boolean finePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+
+        return isAvailable && (coarsePermissionCheck || finePermissionCheck);
     }
 }
