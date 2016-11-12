@@ -17,4 +17,5 @@
     <color name="slide4_background">#d942f4</color>
     <color name="slide5_background">#0206e8</color>
     <color name="slide6_background">#015666</color>
+    <color name="permissions_background">#200166</color>
 </resources>

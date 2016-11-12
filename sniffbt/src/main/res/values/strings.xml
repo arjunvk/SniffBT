@@ -53,4 +53,8 @@
     <string name="slide6_title">Turn On SniffBT</string>
     <string name="slide6_description">Hit the SniffBT button and relax</string>
 
+    <!-- Permissions Slide -->
+    <string name="permissions_title">Requesting Permissions</string>
+    <string name="permissions_description">SniffBT requires the phone\'s location information to accurately scan Bluetooth devices.</string>
+
 </resources>

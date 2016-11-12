@@ -1,5 +1,6 @@
 package millennia.sniffbt;
 
+import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -65,6 +66,17 @@ public class IntroTutorialActivity extends IntroActivity{
                 .title(R.string.slide5_title)
                 .description(R.string.slide5_description)
                 .background(R.color.slide5_background)
+                .build());
+
+        // slide for obtaining permissions
+        addSlide(new SimpleSlide.Builder()
+                .title(R.string.permissions_title)
+                .description(R.string.permissions_description)
+                .background(R.color.permissions_background)
+                .image(R.drawable.location)
+                .permissions(new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION})
                 .build());
 
         // Slide #6
