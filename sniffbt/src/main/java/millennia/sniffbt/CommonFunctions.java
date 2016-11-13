@@ -1,13 +1,7 @@
 package millennia.sniffbt;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.NotificationCompat;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -30,31 +24,6 @@ public class CommonFunctions {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Method to display a notification
-     * @param title - The {@link String} title for the notification
-     * @param text - The {@link String} text for the notification
-     */
-    public void displayNotification(Context context, String title, String text, Class<?> cls) {
-        /*
-        NotificationCompat.Builder mBuilder =
-                (NotificationCompat.Builder) new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_action_bt_on)
-                        .setContentTitle(title)
-                        .setContentText(text);
-        Intent resultIntent = new Intent(context, cls);
-
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mBuilder.build());
-        */
     }
 
     /**
@@ -98,17 +67,6 @@ public class CommonFunctions {
     }
 
     /**
-     * Method to remove a key from the Shared Preferences object
-     * @param  mPref - the {@link SharedPreferences} object
-     * @param strReferenceName - The {@link String} reference name
-     */
-    public void removeSharedPreferencesKey(SharedPreferences mPref, String strReferenceName) {
-        SharedPreferences.Editor prefEditor = mPref.edit();
-        prefEditor.remove(strReferenceName);
-        prefEditor.apply();
-    }
-
-    /**
      * Method to display a SnackBar message
      * @param strMsg - The {@link String} message to be displayed
      */
@@ -122,7 +80,7 @@ public class CommonFunctions {
      * @param obj - The Object to serialize
      * @return - The {@link byte[]} object
      */
-    public byte[] serialize(Object obj){
+    byte[] serialize(Object obj){
         ByteArrayOutputStream out = null;
         try {
             out = new ByteArrayOutputStream();
@@ -140,7 +98,7 @@ public class CommonFunctions {
      * @param data - The {@link byte[]} object
      * @return - The Object
      */
-    public Object deserialize(byte[] data){
+    Object deserialize(byte[] data){
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(data);
             ObjectInputStream is = new ObjectInputStream(in);
