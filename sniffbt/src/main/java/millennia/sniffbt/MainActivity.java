@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity{
                             if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
                                 // Turn on Sniff BT
                                 arrPairedDevicesList = (Row[]) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Paired_Devices), Row[].class);
+                                cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), "ON");
 
                                 // Start service to listen to BT
                                 Log.i(TAG, "Starting Intent Service to start SniffBT scheduler...");
@@ -200,6 +201,7 @@ public class MainActivity extends AppCompatActivity{
                             else if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
                                 // Turn off Sniff BT
                                 Log.i(TAG, "Starting Intent Service to stop SniffBT scheduler...");
+                                cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), "OFF");
                                 getApplicationContext().startService(intentListenBT);
 
                                 mSniffBT.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_action_sniff_bt_off));

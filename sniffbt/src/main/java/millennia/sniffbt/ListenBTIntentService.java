@@ -39,17 +39,15 @@ public class ListenBTIntentService extends IntentService {
         alarmMgr = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmIntent = new Intent(this, AlarmReceiver.class);
 
-        if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
+        if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
             Row[] arrPairedDevicesList = (Row[]) cf.deserialize(workIntent.getByteArrayExtra("PairedDevicesList"));
             alarmIntent.putExtra("PairedDevicesList", cf.serialize(arrPairedDevicesList));
             alarmPendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             startAlarm();
-            cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), "ON");
         }
-        else if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("ON")) {
+        else if(((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), String.class)).equalsIgnoreCase("OFF")) {
             alarmPendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             cancelAlarm();
-            cf.setSharedPreferences(appPrefs, getString(R.string.SH_PREF_Sniff_BT_OnOff), "OFF");
         }
 
     }
