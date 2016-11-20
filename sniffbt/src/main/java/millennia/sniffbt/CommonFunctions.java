@@ -110,6 +110,24 @@ public class CommonFunctions {
         return null;
     }
 
+    /*
+    // Use for debugging purposes
+    void displayNotification(Context context, String title, String text, Class<?> cls) {
+    NotificationCompat.Builder mBuilder =
+                (NotificationCompat.Builder) new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_action_bt_on)
+                        .setContentTitle(title)
+                        .setContentText(text);
+        Intent resultIntent = new Intent(context, cls);
 
-
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(MainActivity.class);
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
+    }
+    */
 }
