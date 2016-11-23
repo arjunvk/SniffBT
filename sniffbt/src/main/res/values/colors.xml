@@ -7,7 +7,7 @@
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#E91E63</color>
     <color name="deviceList">#E0E2E1</color>
-    <color name="list_item_selected">#666666</color>
+    <color name="list_item_selected">#E34768</color>
     <color name="progress_bar_rotation">#006064</color>
 
     <!-- Slide 1 values -->
