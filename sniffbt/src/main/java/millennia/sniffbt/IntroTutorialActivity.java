@@ -1,18 +1,16 @@
 package millennia.sniffbt;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.TypefaceSpan;
 
 import com.heinrichreimersoftware.materialintro.app.IntroActivity;
 import com.heinrichreimersoftware.materialintro.slide.SimpleSlide;
+
+import static millennia.sniffbt.CommonFunctions.isLocationServicesAvailable;
 
 public class IntroTutorialActivity extends IntroActivity{
     @Override
@@ -38,6 +36,7 @@ public class IntroTutorialActivity extends IntroActivity{
         addSlide(new SimpleSlide.Builder()
                  .title(R.string.slide1_title)
                  .description(R.string.slide1_description)
+                 .image(R.drawable.slide_1)
                  .background(R.color.slide1_background)
                  .build());
 
@@ -91,25 +90,5 @@ public class IntroTutorialActivity extends IntroActivity{
                 .description(R.string.slide6_description)
                 .background(R.color.slide6_background)
                 .build());
-    }
-
-    public static boolean isLocationServicesAvailable(Context context) {
-        int locationMode = 0;
-        boolean isAvailable = false;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-            try {
-                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-            } catch (Settings.SettingNotFoundException e) {
-                e.printStackTrace();
-            }
-
-            isAvailable = (locationMode != Settings.Secure.LOCATION_MODE_OFF);
-        }
-
-        boolean coarsePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-        boolean finePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-
-        return isAvailable && (coarsePermissionCheck || finePermissionCheck);
     }
 }

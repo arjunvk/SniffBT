@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -25,6 +24,8 @@ import millennia.sniffbt.fragment.DiscoveredDevice;
 import millennia.sniffbt.fragment.PairedDevice;
 import millennia.sniffbt.fragment.Settings;
 import millennia.sniffbt.pairedDevice.Row;
+
+import static millennia.sniffbt.CommonFunctions.isLocationServicesAvailable;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -307,7 +308,7 @@ public class MainActivity extends AppCompatActivity{
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager manager) {
+        ViewPagerAdapter(FragmentManager manager) {
             super(manager);
         }
 
@@ -321,7 +322,7 @@ public class MainActivity extends AppCompatActivity{
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
@@ -359,8 +360,8 @@ public class MainActivity extends AppCompatActivity{
             isFirstStart = ((String) cf.getSharedPreferences(appPrefs, getString(R.string.SH_PREF_SniffBT_Tutorial_FirstStart), String.class)).equalsIgnoreCase("true");
         }
 
-        //  If the activity has never started before...
-        if (isFirstStart || blnIsInvokedFromPairTab) {
+        //  If the activity has never started before or if Location services are not enabled
+        if (isFirstStart || blnIsInvokedFromPairTab || !isLocationServicesAvailable(getApplicationContext())) {
             // Turn off Bluetooth for Intro tutorial
             btActions.turnOffBluetooth();
 
