@@ -39,7 +39,7 @@
 
     <!-- Slide 3 values -->
     <string name="slide3_title">Set Search Frequency</string>
-    <string name="slide3_description">Use this tab to set the frequency at which SniffBt searches for known Bluetooth devices.</string>
+    <string name="slide3_description">Use this tab to set the frequency at which SniffBT searches for known Bluetooth devices.</string>
 
     <!-- Slide 4 values -->
     <string name="slide4_title">Control Connections</string>
