@@ -68,6 +68,7 @@ public class IntroTutorialActivity extends IntroActivity{
         addSlide(new SimpleSlide.Builder()
                 .title(R.string.slide5_title)
                 .description(R.string.slide5_description)
+                .image(R.drawable.slide_5)
                 .background(R.color.slide5_background)
                 .build());
 
